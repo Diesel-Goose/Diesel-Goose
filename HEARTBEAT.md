@@ -31,7 +31,7 @@ Dynamic progress bars coded. Auto-adjusting based on real metrics.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 CODING GUIDE: Dynamic Progress Bars
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━Diese
 
 ## How The Bars Work
 
