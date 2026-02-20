@@ -1,5 +1,5 @@
 🦆 DIESELGOOSE — GREENHEAD LABS | Chairman
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📅 [DATE] • 🕐 [TIME CST]
 
 ⚡ SYSTEM PULSE
