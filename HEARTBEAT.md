@@ -11,16 +11,16 @@ Productivity[████████████░░░] 80% ⚡
 Mission     [█████████░░░░░░] 55% 🎯
 
 💭 HOW I'M FEELING
+💪 [Dynamic reflection here]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-💪 Million $ in revenue a month is a must.
 
 🎯 DAILY CHECK
+📈 [Dynamic reflection here]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📈 Officers and directors are productive, Revenue is up.
 
 💬 THOUGHTS:
-[Dynamic reflection here]
-
+❓[Dynamic reflection here]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🦆⚡ v1.5.89.321
 
 
