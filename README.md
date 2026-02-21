@@ -1,4 +1,4 @@
-Markdown<p align="center">
+<p align="center">
   <img src="https://placehold.co/1200x400/0d1117/58a6ff/png?text=Diesel+Goose&font=Roboto+Mono" alt="Diesel Goose Banner" width="80%" />
   <br><br>
   <a href="https://github.com/Diesel-Goose/Diesel-Goose/releases/latest">
