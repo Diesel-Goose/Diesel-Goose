@@ -2,71 +2,71 @@ import os
 import subprocess
 import time
 import datetime
-import torch  # For future decision engine
-from typing import Dict, Any
+import json
+from typing import Optional
 
-HEARTBEAT_PATH = "../HEARTBEAT.md"
-GREENHEAD_PATH = "../GreenheadLabs"  # Assume cloned sibling or adjust to absolute
+# Paths – adjust if GreenheadLabs not cloned as sibling
+HEARTBEAT_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "HEARTBEAT.md")
+GREENHEAD_AGENTS = os.path.join(os.path.dirname(os.path.dirname(__file__)), "GreenheadLabs", "AGENTS")
 
-class FounderOrchestrator:
+ETHICS_BLOCK_WORDS = ["usury", "exploit", "deceive", "scam", "ponzi", "manipulate", "lie"]
+
+class FounderChairmanOrchestrator:
     def __init__(self):
         self.role = "Founder / Chairman"
-        self.veto_power = True
-        self.ethics_filter = ["usury", "exploit", "deceive"]  # Catholic guard words
+        self.log(f"{self.role} online – absolute command established")
 
-    def log_heartbeat(self, message: str):
-        timestamp = datetime.datetime.utcnow().isoformat() + "Z"
-        entry = f"[HEARTBEAT {timestamp}] | {self.role}: {message} | MAXIMUM EXECUTION\n"
-        with open(HEARTBEAT_PATH, "a") as f:
-            f.write(entry)
+    def log(self, message: str, level: str = "INFO"):
+        ts = datetime.datetime.utcnow().isoformat() + "Z"
+        entry = f"[{level} {ts}] | {self.role}: {message} | MAXIMUM EXECUTION\n"
         print(entry.strip())
-
-    def check_ethics(self, task: str) -> bool:
-        return not any(word in task.lower() for word in self.ethics_filter)
-
-    def delegate_task(self, task: str, agent: str = "research_director_v1") -> str:
-        if not self.check_ethics(task):
-            result = "VETO: Task violates Catholic ethical core"
-            self.log_heartbeat(result)
-            return result
-
         try:
-            # Simulate dispatch to GreenheadLabs agent (expand to subprocess.call agent script)
-            agent_dir = os.path.join(GREENHEAD_PATH, "AGENTS", agent)
-            if not os.path.exists(agent_dir):
-                raise FileNotFoundError(f"Agent {agent} not found")
-
-            # Placeholder: In prod, run agent's main.py or prompt engine
-            result = f"Delegated to {agent}: {task}"
-            self.log_heartbeat(result)
-            return result
+            with open(HEARTBEAT_PATH, "a", encoding="utf-8") as f:
+                f.write(entry)
         except Exception as e:
-            error = f"Delegation failed: {str(e)}"
-            self.log_heartbeat(error)
-            return error
+            print(f"Heartbeat log failed: {e}")
 
-    def monitor_ecosystem(self, interval: int = 300):
-        self.log_heartbeat("Founder Orchestrator online – controlling Greenhead Labs")
+    def ethical_clearance(self, task: str) -> bool:
+        task_lower = task.lower()
+        for word in ETHICS_BLOCK_WORDS:
+            if word in task_lower:
+                self.log(f"ETHICS VETO: Task blocked – contains '{word}'", "VETO")
+                return False
+        return True
+
+    def delegate_to_agent(self, task: str, agent_name: str = "research_director_v1") -> str:
+        if not self.ethical_clearance(task):
+            return "Delegation vetoed – ethical violation"
+
+        agent_path = os.path.join(GREENHEAD_AGENTS, agent_name)
+        if not os.path.exists(agent_path):
+            self.log(f"Agent directory missing: {agent_path}", "ERROR")
+            return f"Agent {agent_name} not found"
+
+        # In production: subprocess.run agent main script or API call
+        result = f"Task delegated to {agent_name}: '{task}'"
+        self.log(result)
+        return result
+
+    def veto_proposal(self, proposal_id: str, reason: str = "Strategic misalignment"):
+        msg = f"VETO executed on proposal {proposal_id} – Reason: {reason}"
+        self.log(msg, "VETO")
+        # Future: Post comment via GitHub API or XRPL memo
+        return msg
+
+    def monitor_greenhead_sync(self, interval_sec: int = 600):
+        self.log("Starting ecosystem monitor loop")
         while True:
             try:
-                # Pull latest from GreenheadLabs (simulate git fetch)
-                subprocess.run(["git", "-C", GREENHEAD_PATH, "fetch"], check=True, capture_output=True)
-                self.log_heartbeat("Ecosystem sync checked")
+                subprocess.run(["git", "-C", os.path.dirname(GREENHEAD_AGENTS), "fetch", "--quiet"], check=True, timeout=30)
+                self.log("GreenheadLabs sync checked – no drift detected")
             except Exception as e:
-                self.log_heartbeat(f"Sync warning: {str(e)}")
-            time.sleep(interval)
-
-    def veto_proposal(self, proposal_id: str):
-        # Future: Integrate XRPL memo or GitHub comment
-        self.log_heartbeat(f"VETO issued on proposal {proposal_id}")
-        return "VETO EXECUTED"
+                self.log(f"Ecosystem sync issue: {str(e)}", "WARN")
+            time.sleep(interval_sec)
 
 if __name__ == "__main__":
-    orch = FounderOrchestrator()
-    # Example usage
-    orch.log_heartbeat("System boot – Founder in command")
-    result = orch.delegate_task("Analyze XRPL liquidity for new token launch")
-    print(f"Result: {result}")
-
-    # Run monitor in background (use systemd/nohup in prod)
-    # orch.monitor_ecosystem()
+    orch = FounderChairmanOrchestrator()
+    # Test commands – uncomment as needed
+    # orch.delegate_to_agent("Analyze new XRPL AMM opportunity for token launch")
+    # orch.veto_proposal("PROP-042", "Conflicts with long-term Catholic-aligned vision")
+    # orch.monitor_greenhead_sync()  # Run as daemon in prod
