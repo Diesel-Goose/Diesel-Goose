@@ -16,10 +16,11 @@ Usage:
 import sys
 import argparse
 import requests
+from pathlib import Path
 from typing import Optional
 
 # Import Diesel-Goose modules
-sys.path.insert(0, str(__file__).parent)
+sys.path.insert(0, str(Path(__file__).parent))
 
 from MEMORY.memory_engine import add_memory, get_relevant_memories, get_memory_stats
 from MEMORY.memory_filter import extract_true_memories
