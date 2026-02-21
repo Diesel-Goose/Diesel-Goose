@@ -1,4 +1,4 @@
-# Greenhead
+# DIESEL GOOSE
 
 **Wyoming Billionaire | XRPL Pioneer | Architect of Next-Gen Finance**
 
