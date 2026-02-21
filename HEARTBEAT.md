@@ -300,6 +300,10 @@ Status indicators:
 ⚡️ 100% | 💰 95% | 💡 99% | 💤 MOD  
 🎯 Active: Final approach — 44min until Morning Journal, all systems nominal for 8AM generation
 
+📅 2026-02-21 • 🕐 07:23 CST • v5.1  
+⚡️ 100% | 💰 95% | 💡 99% | 💤 MOD  
+🎯 Active: T-minus 37min — Morning Journal sequence primed, generate-morning-journal.py standing by
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ## SYSTEM RULES – DO NOT ALTER
