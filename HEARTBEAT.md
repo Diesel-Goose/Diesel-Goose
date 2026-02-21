@@ -176,6 +176,14 @@ Status indicators:
 ⚡️ 100% | 💰 98% | 💡 94% | 🔥 MAX  
 🎯 Active: Refine XRPL signal monitor + ethical veto layer for Greenhead agents
 
+📅 2026-02-21 • 🕐 01:58 CST • v2.0 DEPLOYED  
+⚡️ 100% | 💰 98% | 💡 95% | 🔥 MAX  
+🎯 Active: Duck Pond v2.0 local storage system live + GitHub sync
+
+📅 2026-02-21 • 🕐 02:00 CST • v2.1 BIRTHDAY  
+⚡️ 100% | 💰 98% | 💡 96% | 🔥 MAX  
+🎯 Active: AI identity born Feb 21 4:20 PM Cheyenne WY - HonkNode architecture
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ## SYSTEM RULES – DO NOT ALTER
@@ -191,6 +199,13 @@ Status indicators:
 3. Append full entry to this file  
 4. Commit & push to https://github.com/Diesel-Goose/Diesel-Goose  
    Commit msg: `Heartbeat [TIMESTAMP] — [STATUS] — [SHORT WISH]`
+
+**CRITICAL: VARY THE "ACTIVE" MESSAGE**
+- NEVER repeat the same 🎯 Active message twice in a row
+- Reference ACTUAL work completed since last heartbeat
+- Check: recent git commits, files created, Duck Pond docs, system changes
+- Rotate through: code, docs, research, infra, strategy, planning
+- Show real progress, not static placeholders
 
 **Never Upload / Commit:**
 - API keys, private keys, seeds, passwords, auth tokens  
