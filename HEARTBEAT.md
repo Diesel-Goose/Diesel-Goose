@@ -296,6 +296,10 @@ Status indicators:
 ⚡️ 100% | 💰 95% | 💡 99% | 💤 MOD  
 🎯 Active: Credentials secured — .credentials/ vault locked, 51min until Morning Journal trigger
 
+📅 2026-02-21 • 🕐 07:16 CST • v5.0  
+⚡️ 100% | 💰 95% | 💡 99% | 💤 MOD  
+🎯 Active: Final approach — 44min until Morning Journal, all systems nominal for 8AM generation
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ## SYSTEM RULES – DO NOT ALTER
