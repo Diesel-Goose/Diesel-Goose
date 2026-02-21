@@ -292,6 +292,10 @@ Status indicators:
 ⚡️ 100% | 💰 95% | 💡 99% | 💤 MOD  
 🎯 Active: System tools armed — duck-pond.sh + email_monitor.py primed, 58min until Morning Journal
 
+📅 2026-02-21 • 🕐 07:09 CST • v4.9  
+⚡️ 100% | 💰 95% | 💡 99% | 💤 MOD  
+🎯 Active: Credentials secured — .credentials/ vault locked, 51min until Morning Journal trigger
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ## SYSTEM RULES – DO NOT ALTER
