@@ -308,6 +308,10 @@ Status indicators:
 ⚡️ 100% | 💰 95% | 💡 99% | 💤 MOD  
 🎯 Active: Half-hour mark — 30min until Morning Journal, Duck Pond warm and ready
 
+📅 2026-02-21 • 🕐 07:37 CST • v5.3  
+⚡️ 100% | 💰 95% | 💡 99% | 💤 MOD  
+🎯 Active: 23min to launch — yesterday's Journal ready for synthesis, 8AM trigger armed
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ## SYSTEM RULES – DO NOT ALTER
