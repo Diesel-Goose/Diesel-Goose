@@ -23,8 +23,8 @@ from typing import Optional
 # PATHS & CONFIG – robust relative resolution
 # ──────────────────────────────────────────────────────────────────────────────
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Diesel-Goose/
-HEARTBEAT_PATH = os.path.join(REPO_ROOT, "HEARTBEAT.md")
-GREENHEAD_ROOT = os.path.join(REPO_ROOT, "..", "GreenheadLabs")  # sibling repo
+HEARTBEAT_PATH = os.path.join(REPO_ROOT, "..", "HEARTBEAT.md")  # From Brain
+GREENHEAD_ROOT = os.path.join(REPO_ROOT, "..", "..", "GreenheadLabs")  # Sibling repo adjust if needed
 GREENHEAD_AGENTS = os.path.join(GREENHEAD_ROOT, "AGENTS")
 
 # Catholic ethical block list – expand as needed
@@ -47,7 +47,7 @@ class FounderChairmanOrchestrator:
         """Create missing directories or warn on critical paths"""
         if not os.path.exists(GREENHEAD_AGENTS):
             print(f"WARNING: GreenheadLabs/AGENTS not found at {GREENHEAD_AGENTS}", file=sys.stderr)
-            print("→ Clone sibling repo: git clone https://github.com/Diesel-Goose/GreenheadLabs ../GreenheadLabs")
+            print("→ Clone sibling repo: git clone https://github.com/Diesel-Goose/GreenheadLabs ../../GreenheadLabs")
 
     def log(self, message: str, level: str = "INFO"):
         """Append to HEARTBEAT.md + console"""
