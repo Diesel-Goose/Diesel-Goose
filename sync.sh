@@ -1,16 +1,17 @@
-#!/bin/bash
-# Auto-sync every 5 minutes
-# Add to crontab: */5 * * * * /Users/dieselgoose/.openclaw/workspace/sync.sh
+#!/usr/bin/env bash
+set -euo pipefail
+# sync.sh - One-shot silent git pull for repo sync.
+# No push, no output clutter. For manual/cron use.
+# Env: REPO_PATH (default .)
 
-cd /Users/dieselgoose/.openclaw/workspace
+REPO_PATH="${REPO_PATH:-.}"
+LOG_FILE="local_sync.log"
 
-# Pull first
-git fetch origin
-git reset --hard origin/main 2>/dev/null
+log() {
+  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] $1" >> "$LOG_FILE"
+}
 
-# Push if changes
-if [ -n "$(git status --porcelain)" ]; then
-    git add -A
-    git commit -m "Sync $(date +%H:%M)"
-    git push origin main
-fi
+log "Starting one-shot sync"
+cd "$REPO_PATH" || { log "ERROR: Invalid REPO_PATH"; exit 1; }
+git pull origin main --quiet || log "Pull failed - check conflicts"
+log "One-shot sync complete"
