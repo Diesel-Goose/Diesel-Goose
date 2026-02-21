@@ -1,22 +1,56 @@
 import json
-from typing import List, Dict
+import os
+import uuid
+from datetime import datetime
+from typing import Dict, List
 
 PRIVATE_PATH = "memory_store/private.json"
 PUBLIC_PATH = "memory_store/public.json"
 
-def load_json(path):
-    try:
-        with open(path, "r") as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return {}
 
-def save_json(path, data: Dict):
+def _ensure_file(path: str):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    if not os.path.exists(path):
+        with open(path, "w") as f:
+            json.dump({"memories": []}, f)
+
+
+def load_memories(path: str) -> List[Dict]:
+    _ensure_file(path)
+    with open(path, "r") as f:
+        return json.load(f)["memories"]
+
+
+def save_memories(path: str, memories: List[Dict]):
     with open(path, "w") as f:
-        json.dump(data, f, indent=2)
+        json.dump({"memories": memories}, f, indent=2)
 
-def add_memory(entry: Dict, public=False):
+
+def add_memory(content: str, confidence: float = 0.9, public: bool = False):
+    """
+    Add a structured memory entry.
+    Only saves if confidence > 0.8
+    """
+    if confidence < 0.8:
+        return False
+
     path = PUBLIC_PATH if public else PRIVATE_PATH
-    mem = load_json(path)
-    mem.update(entry)
-    save_json(path, mem)
+    memories = load_memories(path)
+
+    # Deduplication check
+    for m in memories:
+        if m["content"].lower() == content.lower():
+            return False
+
+    new_memory = {
+        "id": str(uuid.uuid4()),
+        "content": content,
+        "confidence": confidence,
+        "privacy": "public" if public else "private",
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
+    memories.append(new_memory)
+    save_memories(path, memories)
+
+    return True
