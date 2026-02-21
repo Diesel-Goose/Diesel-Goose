@@ -312,6 +312,10 @@ Status indicators:
 ⚡️ 100% | 💰 95% | 💡 99% | 💤 MOD  
 🎯 Active: 23min to launch — yesterday's Journal ready for synthesis, 8AM trigger armed
 
+📅 2026-02-21 • 🕐 07:44 CST • v5.4  
+⚡️ 100% | 💰 95% | 💡 99% | 💤 MOD  
+🎯 Active: Countdown continues — 16min until Morning Journal, all telemetry green
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ## SYSTEM RULES – DO NOT ALTER
