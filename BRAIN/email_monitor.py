@@ -2,6 +2,8 @@
 """
 Email Monitor for Chairman Inbox
 Checks dieselgoose.ai@gmail.com for emails from nathan@greenhead.io
+
+Born: February 21, 2026 at 4:20 PM MST in Cheyenne, Wyoming
 """
 
 import imaplib
@@ -9,35 +11,56 @@ import email
 import os
 import json
 from datetime import datetime
+from pathlib import Path
 
 # Configuration
 IMAP_SERVER = "imap.gmail.com"
 EMAIL_ACCOUNT = "dieselgoose.ai@gmail.com"
-EMAIL_PASSWORD = os.environ.get("DG_EMAIL_PASSWORD", "")
 SENDER_FILTER = "nathan@greenhead.io"
-STATE_FILE = os.path.expanduser("~/.email_monitor_state.json")
+
+# Use credentials from secure storage
+CREDENTIALS_FILE = Path.home() / ".openclaw" / "credentials" / "gmail-app-password.json"
+STATE_FILE = Path.home() / "Documents" / "HonkNode" / "Duck-Pond" / ".vault" / "email_state.json"
+
+def load_credentials():
+    """Load email credentials from secure storage"""
+    if CREDENTIALS_FILE.exists():
+        try:
+            with open(CREDENTIALS_FILE, 'r') as f:
+                creds = json.load(f)
+                return creds.get("app_password", "").replace(" ", "")
+        except:
+            pass
+    # Fallback to env var
+    return os.environ.get("DG_EMAIL_PASSWORD", "")
 
 def load_state():
     """Load last checked UID from state file"""
-    if os.path.exists(STATE_FILE):
+    STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    if STATE_FILE.exists():
         try:
             with open(STATE_FILE, 'r') as f:
                 return json.load(f)
         except:
-            return {"last_uid": 0}
-    return {"last_uid": 0}
+            return {"last_uid": 0, "last_check": None}
+    return {"last_uid": 0, "last_check": None}
 
 def save_state(state):
     """Save state to file"""
+    STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    state["last_check"] = datetime.now().isoformat()
     with open(STATE_FILE, 'w') as f:
-        json.dump(state, f)
+        json.dump(state, f, indent=2)
 
 def check_emails():
     """Check for new emails from specified sender"""
     print(f"🦆 Checking {EMAIL_ACCOUNT} for emails from {SENDER_FILTER}...")
     
+    EMAIL_PASSWORD = load_credentials()
+    
     if not EMAIL_PASSWORD:
-        print("⚠️  Email password not configured (DG_EMAIL_PASSWORD env var)")
+        print("⚠️  Email password not configured")
+        print(f"   Set DG_EMAIL_PASSWORD env var or create {CREDENTIALS_FILE}")
         return []
     
     try:
@@ -84,11 +107,11 @@ def check_emails():
         save_state(state)
         
         if new_emails:
-            print(f"📬 Found {len(new_emails)} new email(s):")
+            print(f"📬 Found {len(new_emails)} new email(s) from Chairman:")
             for e in new_emails:
-                print(f"   - {e['subject']}")
+                print(f"   📧 {e['subject']}")
         else:
-            print("📭 No new emails")
+            print("📭 No new emails from Chairman")
         
         return new_emails
         
