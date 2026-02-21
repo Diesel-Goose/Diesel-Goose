@@ -1,0 +1,5 @@
+{
+  "name": "Diesel",
+  "projects": ["Diesel-Goose"],
+  "preferences": ["local-only storage"]
+}
