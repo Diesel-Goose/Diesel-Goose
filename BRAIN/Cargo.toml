@@ -1,0 +1,11 @@
+[package]
+name = "ollama_setup"
+version = "1.0.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.5.0", features = ["derive"] }
+tokio = { version = "1.36.0", features = ["full"] }
+reqwest = { version = "0.11.24", features = ["json"] }
+serde_json = "1.0.113"
+chrono = "0.4.34"
