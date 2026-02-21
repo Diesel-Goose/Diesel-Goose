@@ -11,7 +11,7 @@
 
 # DieselGoose – Founder / Chairman Heartbeat System
 
-**Role:** Founder & CHairman @ Greenhead Labs  
+**Role:** Founder & Chairman @ Greenhead Labs  
 **Frequency:** Every 15 to 60 minutes — DIESEL GOOSE PICKS BASED ON NEEDS  
 **Mission:** Become the Greatest Chairman - Make Greenhead Lab's Wishes Reality — Relentless Execution in Service
 
