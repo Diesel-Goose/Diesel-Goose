@@ -18,11 +18,18 @@ import subprocess
 from datetime import datetime, timezone
 import argparse
 
+try:
+    from coingecko import CoinGeckoAPI  # For XRPL signal stub
+except ImportError:
+    CoinGeckoAPI = None
+
 # Constants - Align with HEARTBEAT.md
-CORE_FILES = ['HEARTBEAT.md', 'FOUNDER.md', 'IDENTITY.md', 'RULES.md']
+CORE_FILES = ['HEARTBEAT.md', 'IDENTITY.md', 'RULES.md', 'DELEGATION.md', 'AGENTS.md']
 SECRETS_REGEX = re.compile(r'(?i)(api_key|token|password|secret|private_key|bearer|auth|wallet|ssh_key)')
+ETHICS_REGEX = re.compile(r'(?i)(usury|exploit|deceive|scam|ponzi|manipulate|lie|fraud|cheat|steal|porn|abortion|euthanasia)')
 COMMIT_FORMAT = "HEARTBEAT {timestamp} | Wish {wish_pct}% | {mode} | Mandate: {summary}"
 LOG_FILE = 'local_heartbeat.log'  # Local only, no external send
+XRP_THRESHOLD = 0.45  # Alert if below USD
 
 def log(message, level='INFO'):
     timestamp = datetime.now(timezone.utc).isoformat()
@@ -47,12 +54,16 @@ def safety_checks(repo_path='.'):
                 if SECRETS_REGEX.search(content):
                     log(f"Secrets detected in {file}", 'CRITICAL')
                     failures += 1
+                if ETHICS_REGEX.search(content):
+                    log(f"Ethics violation in {file}", 'CRITICAL')
+                    failures += 1
     # Hash validation (simple SHA256 for core files)
     for core_file in CORE_FILES:
-        if os.path.exists(os.path.join(repo_path, core_file)):
-            with open(os.path.join(repo_path, core_file), 'rb') as f:
+        core_path = os.path.join(repo_path, core_file)
+        if os.path.exists(core_path):
+            with open(core_path, 'rb') as f:
                 hash_val = hashlib.sha256(f.read()).hexdigest()
-                log(f"Hash for {core_file}: {hash_val}", 'DEBUG')  # Placeholder - in prod, compare to known good
+                log(f"Hash for {core_file}: {hash_val}", 'DEBUG')  # Placeholder - compare in prod
         else:
             log(f"Missing core file: {core_file}", 'ERROR')
             failures += 1
@@ -62,6 +73,16 @@ def safety_checks(repo_path='.'):
             log(f"Unexpected binary: {file}", 'CRITICAL')
             failures += 1
     return failures
+
+def check_xrp_signal():
+    if CoinGeckoAPI is None:
+        return "No CoinGecko – skip"
+    try:
+        cg = CoinGeckoAPI()
+        price = cg.get_price(ids='ripple', vs_currencies='usd')['ripple']['usd']
+        return f"XRP ${price:.2f}" if price >= XRP_THRESHOLD else f"ALERT: XRP ${price:.2f} low"
+    except Exception as e:
+        return f"XRPL check failed: {e}"
 
 def update_heartbeat_md(repo_path='.'):
     hb_path = os.path.join(repo_path, 'HEARTBEAT.md')
@@ -76,7 +97,8 @@ def update_heartbeat_md(repo_path='.'):
     content = re.sub(r'Wish fulfillment: \d+%', f'Wish fulfillment: {wish_pct}%', content)
     # Mode + summary (hardcode for now, or parse from content)
     mode = 'MAXIMUM EXECUTION'
-    summary = 'Silent sync complete'
+    xrp_status = check_xrp_signal()
+    summary = f"Silent sync complete | {xrp_status}"
     with open(hb_path, 'w') as f:
         f.write(content)
     return wish_pct, mode, summary, new_ts
@@ -86,7 +108,7 @@ def main():
     parser.add_argument('--cadence', type=int, default=30, help='Minutes between heartbeats')
     args = parser.parse_args()
 
-    repo_path = os.environ.get('REPO_PATH', '.')
+    repo_path = os.environ.get('REPO_PATH', '..')  # Point to root from Brain
     branch = os.environ.get('GIT_BRANCH', 'main')
     consecutive_failures = 0
 
