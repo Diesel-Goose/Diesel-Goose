@@ -37,11 +37,11 @@ Status indicators:
 
 [Example – do not delete this section header]
 📅 2026-02-20 • 🕐 22:02 CST • v1.7.0  
-⚡️ 100% | 💰 98% | 💡 94% | 🔥 MAX  
+⚡️ 90% | 💰 98% | 💡 94% | 🔥 MAX  
 🎯 Active: Refine XRPL signal monitor + ethical veto layer for Greenhead agents
 
 📅 2026-02-20 • 🕐 22:03 CST • v1.7.1  
-⚡️ 100% | 💰 98% | 💡 94% | 🔥 MAX  
+⚡️ 79% | 💰 94% | 💡 91% | 🔥 MAX  
 🎯 Active: Refine XRPL signal monitor + ethical veto layer for Greenhead agents
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
