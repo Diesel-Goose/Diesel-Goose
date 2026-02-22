@@ -79,11 +79,29 @@ class SandboxedChrisDunn:
         self.config_path = config_path
         self.violations = []
         self.start_time = datetime.utcnow()
+        self.last_report_time = datetime.utcnow()
+        
+        # Load reporter
+        try:
+            from utils.financial_reporter import FinancialReporter
+            from utils.alerts import AlertManager
+            import yaml
+            
+            with open(config_path, 'r') as f:
+                config = yaml.safe_load(f)
+            
+            self.reporter = FinancialReporter(config, AlertManager(config))
+            self.reporting_enabled = True
+        except Exception as e:
+            print(f"⚠️  Financial reporter not available: {e}")
+            self.reporter = None
+            self.reporting_enabled = False
         
         print("🦆 Initializing Chris Dunn (Sandbox Mode)...")
         print("   Mode: PAPER ONLY")
         print("   Scope: Trading operations ONLY")
         print("   Violations: Reported to Diesel Goose")
+        print("   Reports: Every 30 minutes to group")
         print()
     
     async def run_test(self, strategy: str, duration_minutes: int):
@@ -126,6 +144,12 @@ class SandboxedChrisDunn:
                     # Safety check
                     if cycles % 10 == 0:
                         print(f"   ✅ {cycles} cycles complete, no violations")
+                    
+                    # Check if 30 minutes passed — send financial report
+                    time_since_report = (datetime.utcnow() - self.last_report_time).total_seconds()
+                    if time_since_report >= 1800:  # 30 minutes
+                        await self._send_financial_report(strategy)
+                        self.last_report_time = datetime.utcnow()
                     
                 except ScopeViolation as e:
                     print(f"\n🚨 SCOPE VIOLATION: {e}")
@@ -191,6 +215,28 @@ Review logs immediately.
         log_file = Path('audit.log')
         with open(log_file, 'a') as f:
             f.write(f"{datetime.utcnow().isoformat()} | TRADE | {trade}\n")
+    
+    async def _send_financial_report(self, strategy: str):
+        """Send 30-minute financial report to Telegram group."""
+        if not self.reporter:
+            return
+        
+        try:
+            # Get current stats
+            stats = self.reporter.get_current_stats()
+            stats['strategy'] = strategy
+            
+            # Generate report
+            report = self.reporter.generate_paper_report(stats)
+            
+            # Post to group
+            await self.reporter.post_to_group(report)
+            
+            # Also log it
+            print(f"\n📊 FINANCIAL REPORT SENT:\n{report}\n")
+            
+        except Exception as e:
+            print(f"⚠️  Failed to send financial report: {e}")
     
     async def _report_results(self, total_cycles: int):
         """Generate test report."""

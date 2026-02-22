@@ -35,12 +35,26 @@ scope:
 # Token provided by Chairman (sandbox isolated)
 telegram:
   bot_token: "8350022484:AAG0IBBm6iPfxcIJ4yQD9R5p2mjY6GLyOWM"
-  chat_id: "7491205261"  # Nathan's Telegram
+  
+  # Private command channel (Diesel Goose only)
+  admin_chat_id: "7491205261"
+  
+  # Group chat for reporting (Greenhead Labs team)
+  # Group: https://t.me/+BAaisyTCF9RkNzhh
+  # Note: Bot must be added to group first. Chat ID will be provided after.
+  group_chat_id: null  # Set after bot is added to group (usually starts with -100)
+  
   alerts:
     on_trade: true
     on_error: true
     on_scope_violation: true  # CRITICAL: Always alert on violations
     on_daily_summary: true
+    
+  # Financial reporting to group
+  financial_reports:
+    enabled: true
+    interval_minutes: 30  # Post every 30 minutes
+    format: "heartbeat"  # Match Diesel Goose heartbeat style
 
 # ==================== RESTRICTED TRADING PARAMS ====================
 trading:
