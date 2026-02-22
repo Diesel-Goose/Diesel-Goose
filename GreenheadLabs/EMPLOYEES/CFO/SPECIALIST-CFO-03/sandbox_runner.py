@@ -145,9 +145,9 @@ class SandboxedChrisDunn:
                     if cycles % 10 == 0:
                         print(f"   ✅ {cycles} cycles complete, no violations")
                     
-                    # Check if 30 minutes passed — send financial report
+                    # Check if 15 minutes passed — send financial report (Chairman: 15-min intervals)
                     time_since_report = (datetime.utcnow() - self.last_report_time).total_seconds()
-                    if time_since_report >= 1800:  # 30 minutes
+                    if time_since_report >= 900:  # 15 minutes
                         await self._send_financial_report(strategy)
                         self.last_report_time = datetime.utcnow()
                     

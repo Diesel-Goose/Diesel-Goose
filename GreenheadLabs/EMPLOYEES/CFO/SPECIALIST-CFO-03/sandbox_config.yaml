@@ -33,8 +33,10 @@ scope:
 
 # ==================== TELEGRAM CONFIGURATION ====================
 # Token provided by Chairman (sandbox isolated)
+# ⚠️  NEVER commit real tokens - use environment variables
 telegram:
-  bot_token: "8350022484:AAG0IBBm6iPfxcIJ4yQD9R5p2mjY6GLyOWM"
+  # Set via: export CHRIS_DUNN_BOT_TOKEN="your_token_here"
+  bot_token: "${CHRIS_DUNN_BOT_TOKEN}"
   
   # Private command channel (Diesel Goose only)
   admin_chat_id: "7491205261"
@@ -53,7 +55,7 @@ telegram:
   # Financial reporting to group
   financial_reports:
     enabled: true
-    interval_minutes: 30  # Post every 30 minutes
+    interval_minutes: 15  # Post every 15 minutes (Chairman request)
     format: "heartbeat"  # Match Diesel Goose heartbeat style
 
 # ==================== RESTRICTED TRADING PARAMS ====================

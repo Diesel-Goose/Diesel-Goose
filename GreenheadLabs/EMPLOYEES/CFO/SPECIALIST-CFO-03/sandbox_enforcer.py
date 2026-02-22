@@ -26,7 +26,8 @@ from typing import Callable, Any
 
 # Diesel Goose contact for violations
 DIESEL_GOOSE_CHAT = "7491205261"  # Nathan's Telegram
-BOT_TOKEN = "8350022484:AAG0IBBm6iPfxcIJ4yQD9R5p2mjY6GLyOWM"
+# BOT_TOKEN loaded from environment - NEVER hardcode secrets
+BOT_TOKEN = os.getenv('CHRIS_DUNN_BOT_TOKEN', '')
 
 
 class ScopeViolation(Exception):
