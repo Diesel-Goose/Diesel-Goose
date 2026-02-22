@@ -9,8 +9,8 @@
 
 ### 1. Fixed telegram_heartbeat.py
 Updated to write to correct HEARTBEAT.md location:
-- **Before:** `~/Documents/HonkNode/Duck-Pond/HEARTBEAT.md`
-- **After:** `~/.openclaw/workspace/HEARTBEAT.md` (the git-tracked file with full history)
+- **Before:** `~/Documents/HonkNode/Duck-Pond/HEARTBEAT.md` (OLD LOCATION)
+- **After:** `~/Honk-Node/Duck-Pond/HEARTBEAT.md` (NEW LOCATION) (the git-tracked file with full history)
 
 ### 2. Created self_monitor.sh
 Location: `~/.openclaw/workspace/self_monitor.sh`
@@ -29,7 +29,7 @@ Since macOS blocks both cron and LaunchAgent, you have these options:
 Run this whenever you want to log a heartbeat:
 ```bash
 # Send heartbeat + sync to GitHub
-/opt/homebrew/bin/python3 ~/Documents/HonkNode/Duck-Pond/System/telegram_heartbeat.py
+/opt/homebrew/bin/python3 ~/Honk-Node/Duck-Pond/System/telegram_heartbeat.py
 
 # Or use the monitor script
 cd ~/.openclaw/workspace && ./self_monitor.sh heartbeat
@@ -55,7 +55,7 @@ Stop daemon:
 Keep a terminal tab open with:
 ```bash
 while true; do
-  /opt/homebrew/bin/python3 ~/Documents/HonkNode/Duck-Pond/System/telegram_heartbeat.py
+  /opt/homebrew/bin/python3 ~/Honk-Node/Duck-Pond/System/telegram_heartbeat.py
   sleep 600  # 10 minutes
 done
 ```

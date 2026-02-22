@@ -39,7 +39,7 @@ All matches are:
 
 ### 2. Credentials Storage Analysis
 
-**Location:** `/Users/dieselgoose/Documents/HonkNode/Duck-Pond/.credentials/credentials.json`
+**Location:** `/Users/dieselgoose/Honk-Node/Duck-Pond/.credentials/credentials.json` (NEW LOCATION)
 
 | Check | Status | Detail |
 |-------|--------|--------|
