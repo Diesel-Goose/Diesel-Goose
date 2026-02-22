@@ -6,7 +6,7 @@
 set -euo pipefail
 
 WORKSPACE="/Users/dieselgoose/.openclaw/workspace"
-BACKUP="/Users/dieselgoose/Documents/HonkNode/Hunters/Diesel-Goose"
+BACKUP="/Users/dieselgoose/Honk-Node/Hunters/Diesel-Goose"
 LOG_DIR="/Users/dieselgoose/.openclaw/logs"
 ALERT_TOKEN="8350022484:AAE93G6trBzE6fhahPtdCKWZke6ZubGTaGQ"
 ALERT_CHAT="7491205261"
