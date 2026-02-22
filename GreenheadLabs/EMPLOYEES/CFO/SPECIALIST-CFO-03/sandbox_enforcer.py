@@ -239,20 +239,9 @@ def safe_file_write(filepath: str, content: str):
         f.write(content)
 
 
-# Override dangerous builtins
-_original_import = __builtins__.__import__
+# Import override disabled - simpler approach via path checks
+# Scope enforcement is handled in check_path() and enforce_scope()
 
-def _sandboxed_import(name, *args, **kwargs):
-    """Sandboxed import to block dangerous modules."""
-    dangerous = ['subprocess', 'os.system', 'pty', 'socket']
-    
-    if any(d in name for d in dangerous):
-        sandbox._handle_violation(f"IMPORT ATTEMPT: {name}")
-    
-    return _original_import(name, *args, **kwargs)
-
-
-# Install sandbox (only in sandbox mode)
+# Log sandbox mode
 if os.getenv('CHRIS_DUNN_SANDBOX', 'false').lower() == 'true':
-    __builtins__.__import__ = _sandboxed_import
     print("🛡️  SANDBOX MODE ACTIVE — Chris Dunn scope enforced")

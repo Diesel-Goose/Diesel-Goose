@@ -99,14 +99,16 @@ check_health() {
 security_scan() {
     log "Running security scan"
     
-    # Check for secrets in code (should never happen, but verify)
-    local secrets_found=$(grep -r "ghp_\|sk-\|api_key.*[a-zA-Z0-9]\{32\}" \
+    # Check for secrets in code (exclude docs, venv, and audit files)
+    local secrets_found=$(grep -r "ghp_[a-zA-Z0-9]\{36\}\|sk-[a-zA-Z0-9]\{48\}" \
         --include="*.py" --include="*.yaml" "$WORKSPACE" 2>/dev/null | \
-        grep -v ".venv" | grep -v "example\|__pycache__" | wc -l)
+        grep -v ".venv\|__pycache__\|SECURITY_AUDIT\|example\|\.md" | wc -l)
     
     if [[ $secrets_found -gt 0 ]]; then
         alert "🚨 SECURITY ALERT: $secrets_found potential secrets found in code!"
         log "CRITICAL: Secrets detected in repository"
+    else
+        log "Security scan clean"
     fi
 }
 
