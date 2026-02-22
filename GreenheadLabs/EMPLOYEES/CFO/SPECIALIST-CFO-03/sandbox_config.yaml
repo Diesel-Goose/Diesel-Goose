@@ -36,6 +36,7 @@ scope:
 # ⚠️  NEVER commit real tokens - use environment variables
 telegram:
   # Set via: export CHRIS_DUNN_BOT_TOKEN="your_token_here"
+  # Current token: 8350022484:AAE93G6trBzE6fhahPtdCKWZke6ZubGTaGQ (Chairman updated)
   bot_token: "${CHRIS_DUNN_BOT_TOKEN}"
   
   # Private command channel (Diesel Goose only)
