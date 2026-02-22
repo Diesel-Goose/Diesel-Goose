@@ -85,10 +85,10 @@ class SandboxedChrisDunn:
         try:
             from utils.financial_reporter import FinancialReporter
             from utils.alerts import AlertManager
-            import yaml
+            import json
             
             with open(config_path, 'r') as f:
-                config = yaml.safe_load(f)
+                config = json.load(f)
             
             self.reporter = FinancialReporter(config, AlertManager(config))
             self.reporting_enabled = True
