@@ -1,0 +1,133 @@
+# Chris Dunn — Ultimate XRPL Trader Configuration
+# Copy this file to config.yaml and customize
+
+# ==================== TRADING MODE ====================
+trading:
+  mode: paper  # 'paper' for simulation, 'live' for real trading
+  cooldown_seconds: 60  # Seconds between trading cycles
+  max_runtime_hours: 8  # Auto-stop after N hours (0 = unlimited)
+  
+# ==================== WALLET CONFIG ====================
+wallet:
+  # XRPL Wallet Address (r...)
+  address: "rYOURWALLETADDRESSHERE"
+  
+  # DO NOT put secret keys here! Use environment variables
+  # export XRP_SECRET_KEY="sYOURSECRETKEY"
+  
+  # Xaman API credentials (for mobile approval flow)
+  xaman_api_key: "${XAMAN_API_KEY}"
+  xaman_api_secret: "${XAMAN_API_SECRET}"
+
+# ==================== RISK MANAGEMENT ====================
+# THESE LIMITS ARE NON-NEGOTIABLE
+risk:
+  # Position sizing
+  max_position_size_xrp: 1000  # Max XRP in any position
+  max_position_pct: 5.0  # Max % of portfolio in single trade
+  
+  # Loss limits
+  max_daily_loss_xrp: 500  # Stop trading if daily loss exceeds
+  max_daily_loss_pct: 3.0  # Stop if down 3% in a day
+  stop_loss_pct: 2.0  # Auto-exit losing trades
+  
+  # Order limits
+  max_open_orders: 10  # Prevent order spam
+  max_orders_per_hour: 30
+  
+  # Minimum requirements
+  min_balance_xrp: 100  # Minimum XRP to keep in reserve
+  min_order_size_xrp: 10  # Smallest trade size
+
+# ==================== STRATEGIES ====================
+strategies:
+  enabled:
+    - market_maker
+    # - arbitrage  # Uncomment to enable
+    # - momentum   # Uncomment to enable
+  
+  # Market Maker Settings
+  market_maker:
+    spread_pct: 0.5  # Target spread (0.5% = buy 0.5% below, sell 0.5% above)
+    order_size_xrp: 100  # Size of each MM order
+    max_orders_each_side: 3  # Max buy + sell orders open
+    rebalance_threshold_pct: 1.0  # Rebalance inventory if >1% off target
+    target_inventory_pct: 50.0  # Target 50% XRP, 50% USD/stable
+    
+  # Arbitrage Scanner Settings
+  arbitrage:
+    min_spread_pct: 1.0  # Minimum price difference to trade
+    scan_interval_seconds: 30
+    max_hold_time_seconds: 300  # Exit if not filled in 5 min
+    venues:  # Exchanges to monitor
+      - xrpl_dex
+      # - binance  # Requires API key
+      # - kraken   # Requires API key
+    
+  # Momentum Trader Settings
+  momentum:
+    timeframe: "15m"  # 15-minute candles
+    rsi_period: 14
+    rsi_overbought: 70
+    rsi_oversold: 30
+    macd_fast: 12
+    macd_slow: 26
+    macd_signal: 9
+    volume_threshold: 1.5  # Trade if volume > 1.5x average
+    trend_strength: 2  # Minimum consecutive candles in direction
+
+# ==================== MARKET DATA ====================
+market_data:
+  # Price feed sources
+  sources:
+    - xrpl_dex
+    - coinmarketcap  # Requires API key
+  
+  # Update frequency
+  price_update_seconds: 10
+  orderbook_depth: 20  # Levels to fetch
+
+# ==================== NOTIFICATIONS ====================
+alerts:
+  enabled: true
+  telegram:
+    bot_token: "${TELEGRAM_BOT_TOKEN}"
+    chat_id: "${TELEGRAM_CHAT_ID}"
+  
+  # Alert conditions
+  on_trade: true
+  on_error: true
+  on_daily_summary: true
+  on_stop_loss: true
+
+# ==================== LOGGING ====================
+logging:
+  level: INFO  # DEBUG, INFO, WARNING, ERROR
+  file: logs/chris_dunn.log
+  max_file_size_mb: 10
+  backup_count: 5
+  
+  # Separate trade log (audit trail)
+  trade_log: logs/trades.csv
+
+# ==================== METRICS ====================
+metrics:
+  enabled: true
+  report_interval_minutes: 60
+  track_pnl: true
+  track_win_rate: true
+  track_sharpe: true
+
+# ==================== SAFETY SWITCHES ====================
+safety:
+  # Emergency stops
+  halt_on_error: true  # Stop if unhandled error
+  halt_on_low_balance: true  # Stop if balance < min_balance
+  halt_after_consecutive_losses: 5  # Stop after 5 losing trades
+  
+  # Time restrictions (server time)
+  trading_hours:
+    enabled: false  # Set true to restrict trading times
+    start: "09:00"
+    end: "17:00"
+    timezone: "America/Chicago"
