@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.greenheadlabs.watchdog</string>
+    
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/dieselgoose/.openclaw/workspace/watchdog.sh</string>
+    </array>
+    
+    <key>WorkingDirectory</key>
+    <string>/Users/dieselgoose/.openclaw/workspace</string>
+    
+    <key>StartInterval</key>
+    <integer>600</integer>  <!-- 10 minutes -->
+    
+    <key>StandardOutPath</key>
+    <string>/Users/dieselgoose/.openclaw/logs/watchdog_out.log</string>
+    
+    <key>StandardErrorPath</key>
+    <string>/Users/dieselgoose/.openclaw/logs/watchdog_err.log</string>
+    
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>
