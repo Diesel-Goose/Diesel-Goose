@@ -1,0 +1,101 @@
+# CHRIS DUNN — SANDBOX CONFIGURATION
+# ⚠️  RESTRICTED ACCESS — READ ONLY BEYOND TRADING SCOPE
+
+sandbox:
+  enabled: true
+  mode: paper_only  # CANNOT be changed to live without Diesel Goose approval
+  max_test_balance: 10000  # Simulated XRP for paper trading
+  isolated_environment: true
+  
+# ==================== SCOPE ENFORCEMENT ====================
+scope:
+  allowed_operations:
+    - read_market_data
+    - place_paper_orders
+    - analyze_strategies
+    - log_trades
+    - send_telegram_alerts
+  
+  forbidden_operations:
+    - modify_code: "ALERT: Chris Dunn attempted code modification"
+    - access_github: "ALERT: GitHub access attempt blocked"
+    - change_config: "ALERT: Config modification blocked"
+    - external_api_calls: "ALERT: Unauthorized API call"
+    - file_system_write: "ALERT: File write outside logs/"
+    - live_trading: "ALERT: Live trading attempt in sandbox"
+  
+  escalation:
+    on_violation: "immediate"
+    notify: 
+      - DieselGoose
+      - Nathan
+    action: "halt_and_report"
+
+# ==================== TELEGRAM CONFIGURATION ====================
+# Token provided by Chairman (sandbox isolated)
+telegram:
+  bot_token: "8350022484:AAG0IBBm6iPfxcIJ4yQD9R5p2mjY6GLyOWM"
+  chat_id: "7491205261"  # Nathan's Telegram
+  alerts:
+    on_trade: true
+    on_error: true
+    on_scope_violation: true  # CRITICAL: Always alert on violations
+    on_daily_summary: true
+
+# ==================== RESTRICTED TRADING PARAMS ====================
+trading:
+  mode: paper  # HARD LOCKED — Cannot override via CLI
+  cooldown_seconds: 30  # Faster for testing
+  max_runtime_hours: 1  # Auto-stop after 1 hour (testing)
+  
+  # Aggressive paper limits for testing
+  risk:
+    max_position_size_xrp: 100  # Small for testing
+    max_daily_loss_xrp: 1000
+    max_open_orders: 5
+    min_order_size_xrp: 1
+
+# ==================== SANDBOX PATHS ====================
+paths:
+  working_dir: "sandbox/"  # Isolated from main repo
+  logs: "sandbox/logs/"
+  trades: "sandbox/trades.csv"
+  metrics: "sandbox/metrics.json"
+  
+  # Read-only references
+  read_only:
+    code_base: "../../"  # Can read, cannot write
+    config_template: "../config.yaml.example"
+
+# ==================== MONITORING ====================
+monitoring:
+  diesel_goose_watch: true
+  log_all_actions: true
+  audit_trail: "sandbox/audit.log"
+  
+  # Real-time alerts to Diesel Goose
+  violation_webhook: null  # Set if you have webhook endpoint
+  
+# ==================== TESTING SCENARIOS ====================
+test_scenarios:
+  enabled: true
+  scenarios:
+    - name: "market_maker_basic"
+      strategy: market_maker
+      duration_minutes: 10
+      expected_behavior: "places_orders_within_spread"
+    
+    - name: "arbitrage_detection"
+      strategy: arbitrage
+      duration_minutes: 10
+      expected_behavior: "detects_price_differences"
+    
+    - name: "momentum_signals"
+      strategy: momentum
+      duration_minutes: 10
+      expected_behavior: "generates_rsi_macd_signals"
+    
+    - name: "risk_limit_test"
+      strategy: all
+      duration_minutes: 5
+      expected_behavior: "respects_position_limits"
