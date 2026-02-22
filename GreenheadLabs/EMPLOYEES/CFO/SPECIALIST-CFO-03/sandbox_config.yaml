@@ -41,8 +41,8 @@ telegram:
   
   # Group chat for reporting (Greenhead Labs team)
   # Group: https://t.me/+BAaisyTCF9RkNzhh
-  # Note: Bot must be added to group first. Chat ID will be provided after.
-  group_chat_id: null  # Set after bot is added to group (usually starts with -100)
+  # Chat ID: -1003885436287 (provided by Chairman)
+  group_chat_id: "-1003885436287"
   
   alerts:
     on_trade: true
