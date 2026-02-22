@@ -56,7 +56,7 @@ telegram:
   # Financial reporting to group
   financial_reports:
     enabled: true
-    interval_minutes: 15  # Post every 15 minutes (Chairman request)
+    interval_minutes: 5  # Post every 5 minutes (Chairman testing mode)
     format: "heartbeat"  # Match Diesel Goose heartbeat style
 
 # ==================== RESTRICTED TRADING PARAMS ====================
