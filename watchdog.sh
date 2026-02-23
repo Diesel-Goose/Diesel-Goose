@@ -85,15 +85,22 @@ check_health() {
         log "Chris Dunn not running (may be expected)"
     fi
     
-    # Check heartbeat monitor
-    if screen -list | grep -q "dieselgoose"; then
-        log "Heartbeat monitor active"
+    # Check self_monitor daemon (not screen session)
+    if pgrep -f "self_monitor.sh" > /dev/null; then
+        log "Self-monitor daemon active"
     else
-        log "WARNING: Heartbeat monitor down"
+        log "WARNING: Self-monitor daemon not running"
         # Auto-restart
         cd "$WORKSPACE"
-        ./persistent_heartbeat.sh start 2>/dev/null || true
-        alert "⚠️ Heartbeat monitor restarted"
+        ./self_monitor.sh start > /dev/null 2>&1 &
+        sleep 2
+        if pgrep -f "self_monitor.sh" > /dev/null; then
+            log "Self-monitor daemon restarted successfully"
+            alert "✅ Self-monitor daemon restarted"
+        else
+            log "ERROR: Failed to restart self-monitor daemon"
+            alert "❌ Failed to restart self-monitor daemon"
+        fi
     fi
 }
 
