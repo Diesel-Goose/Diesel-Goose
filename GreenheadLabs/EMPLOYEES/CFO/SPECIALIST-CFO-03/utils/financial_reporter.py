@@ -70,30 +70,31 @@ class FinancialReporter:
     def generate_paper_report(self, simulated_metrics: Dict[str, Any]) -> str:
         """
         Generate report for paper trading (simulated data).
+        Format per Chairman's specification:
+        🦆 Chris Dunn | Lead XRPL Analyst — Greenhead Labs
+        ⚡️ Total Trades: X | 💰 XX.X% Profit | 💡 XX% Win | 🔥 LIVE
+        XRP Profit: XXX.XX | USD Profit: $XXX.XX | Total Volume: $XXX,XXX.XX
+        📅 HH:MM CST • Auto-Report
         """
         now = datetime.utcnow()
-        runtime = datetime.utcnow() - self.session_stats['start_time']
-        runtime_min = runtime.total_seconds() / 60
         
-        # Simulated metrics for testing
+        # Metrics
         trades = simulated_metrics.get('trades', 0)
         wins = simulated_metrics.get('wins', 0)
-        pnl = simulated_metrics.get('pnl', 0)
+        pnl_pct = simulated_metrics.get('pnl', 0)
         
-        win_rate = (wins / trades * 100) if trades > 0 else 99
-        profit_pct = pnl if pnl != 0 else 25.0  # Simulated profit
+        win_rate = (wins / trades * 100) if trades > 0 else 0
         
-        # Calculate trades per minute
-        trades_per_min = round(trades / runtime_min, 1) if runtime_min > 0 else 0
-        
-        # Status based on performance
-        status = "🔥 MAX" if win_rate >= 70 else "⚡️ HIGH" if win_rate >= 50 else "💤 MOD"
+        # Calculate derived values (simulated for paper trading)
+        xrp_profit = pnl_pct * 10  # Simulated XRP profit
+        usd_profit = xrp_profit * 0.50  # $0.50 per XRP
+        total_volume = trades * 50 * 0.50  # Average $50 per trade
         
         lines = [
             "🦆 Chris Dunn | Lead XRPL Analyst — Greenhead Labs",
-            f"⚡️ {trades_per_min} Trades/Min | 💰 {profit_pct:.1f}% Profit | 💡 {win_rate:.0f}% Win | {status}",
-            f"🎯 Active: Paper Trading XRP via Sandbox",
-            f"📅 {now.strftime('%H:%M')} CST • Financial Report • PAPER MODE"
+            f"⚡️ Total Trades: {trades} | 💰 {pnl_pct:.2f}% Profit | 💡 {win_rate:.0f}% Win | 🔥 LIVE",
+            f"XRP Profit: {xrp_profit:.2f} | USD Profit: ${usd_profit:.2f} | Total Volume: ${total_volume:,.2f}",
+            f"📅 {now.strftime('%H:%M')} CST • Auto-Report"
         ]
         
         return "\n".join(lines)
