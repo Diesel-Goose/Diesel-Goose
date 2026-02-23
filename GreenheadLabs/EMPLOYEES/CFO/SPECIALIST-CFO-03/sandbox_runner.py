@@ -75,7 +75,7 @@ class SandboxedChrisDunn:
     Chris Dunn wrapped in sandbox constraints.
     """
     
-    def __init__(self, config_path: str = '../sandbox_config.yaml'):
+    def __init__(self, config_path: str = 'sandbox_config.json'):
         self.config_path = config_path
         self.violations = []
         self.start_time = datetime.utcnow()
