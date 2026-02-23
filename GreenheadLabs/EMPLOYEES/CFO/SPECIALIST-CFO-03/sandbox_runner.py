@@ -75,7 +75,7 @@ class SandboxedChrisDunn:
     Chris Dunn wrapped in sandbox constraints.
     """
     
-    def __init__(self, config_path: str = 'sandbox_config.json'):
+    def __init__(self, config_path: str = '../sandbox_config.json'):
         self.config_path = config_path
         self.violations = []
         self.start_time = datetime.utcnow()
@@ -87,6 +87,7 @@ class SandboxedChrisDunn:
             from utils.alerts import AlertManager
             import json
             
+            # Config is in parent directory since we're in sandbox/
             with open(config_path, 'r') as f:
                 config = json.load(f)
             
