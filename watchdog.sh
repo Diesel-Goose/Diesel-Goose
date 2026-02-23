@@ -8,7 +8,7 @@ set -euo pipefail
 WORKSPACE="/Users/dieselgoose/.openclaw/workspace"
 BACKUP="/Users/dieselgoose/Honk-Node/Hunters/Diesel-Goose"
 LOG_DIR="/Users/dieselgoose/.openclaw/logs"
-ALERT_TOKEN="8350022484:AAE93G6trBzE6fhahPtdCKWZke6ZubGTaGQ"
+ALERT_TOKEN="8476304097:AAFOPOzPlJ7uG8rWjAQuJsL8adfj1c7kMO8"
 ALERT_CHAT="7491205261"
 
 log() {
@@ -76,9 +76,11 @@ check_health() {
         log "WARNING: Disk ${disk_usage}% full"
     fi
     
-    # Check if Chris Dunn is running (if should be)
-    if pgrep -f "chris_dunn.py" > /dev/null; then
-        log "Chris Dunn is running"
+    # Check if Chris Dunn is running (check continuous_runner.py process)
+    if pgrep -f "continuous_runner.py" > /dev/null; then
+        log "Chris Dunn is running (continuous_runner detected)"
+    elif pgrep -f "chris_dunn.py" > /dev/null; then
+        log "Chris Dunn is running (chris_dunn.py detected)"
     else
         log "Chris Dunn not running (may be expected)"
     fi

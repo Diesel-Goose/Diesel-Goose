@@ -18,12 +18,17 @@ class AlertManager:
     - Stop loss triggered
     """
     
+    # Default tokens - DieselGoose Bot
+    DEFAULT_BOT_TOKEN = "8476304097:AAFOPOzPlJ7uG8rWjAQuJsL8adfj1c7kMO8"
+    DEFAULT_CHAT_ID = "7491205261"
+    
     def __init__(self, config: Dict):
         self.config = config.get('alerts', {})
-        self.enabled = self.config.get('enabled', False)
+        self.enabled = self.config.get('enabled', True)  # Enable by default
         
-        self.bot_token = self._get_config('telegram', 'bot_token')
-        self.chat_id = self._get_config('telegram', 'chat_id')
+        # Use config values or fall back to defaults
+        self.bot_token = self._get_config('telegram', 'bot_token') or self.DEFAULT_BOT_TOKEN
+        self.chat_id = self._get_config('telegram', 'chat_id') or self.DEFAULT_CHAT_ID
         
         self.logger = logging.getLogger('AlertManager')
         

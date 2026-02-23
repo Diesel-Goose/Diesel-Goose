@@ -6,7 +6,7 @@
 set -euo pipefail
 
 WORKSPACE="/Users/dieselgoose/.openclaw/workspace"
-DUCKPOND="/Users/dieselgoose/Honk-Node/Duck-Pond"
+DUCKPOND="/Users/dieselgoose/.openclaw/workspace"
 LOG_DIR="/Users/dieselgoose/.openclaw/logs"
 PIDFILE="$LOG_DIR/heartbeat_daemon.pid"
 CADENCE_MINUTES=10
