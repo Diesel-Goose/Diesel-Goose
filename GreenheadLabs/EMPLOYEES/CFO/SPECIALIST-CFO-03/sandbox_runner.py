@@ -147,9 +147,12 @@ class SandboxedChrisDunn:
                     
                     # Check if 5 minutes passed — send financial report (Chairman: 5-min intervals for testing)
                     time_since_report = (datetime.utcnow() - self.last_report_time).total_seconds()
+                    print(f"   DEBUG: Time since last report: {time_since_report:.0f}s (threshold: 300s)")
                     if time_since_report >= 300:  # 5 minutes
+                        print("   DEBUG: 5 minutes passed - sending report")
                         self._send_financial_report(strategy)
                         self.last_report_time = datetime.utcnow()
+                        print("   DEBUG: Report time updated")
                     
                 except ScopeViolation as e:
                     print(f"\n🚨 SCOPE VIOLATION: {e}")
@@ -218,23 +221,33 @@ Review logs immediately.
     
     def _send_financial_report(self, strategy: str):
         """Send financial report to Telegram group (synchronous)."""
+        print(f"\n📊 DEBUG: _send_financial_report called for {strategy}")
+        print(f"📊 DEBUG: Reporter available: {self.reporter is not None}")
+        print(f"📊 DEBUG: Reporting enabled: {self.reporting_enabled}")
+        
         if not self.reporter:
-            print("⚠️ Reporter not available")
+            print("⚠️ Reporter not available - cannot send report")
             return
         
         try:
             # Get current stats
             stats = self.reporter.get_current_stats()
             stats['strategy'] = strategy
+            print(f"📊 DEBUG: Stats: {stats}")
             
             # Generate report
             report = self.reporter.generate_paper_report(stats)
+            print(f"📊 DEBUG: Report generated, length: {len(report)}")
             
             # Post to group (synchronous)
+            print("📊 DEBUG: Posting to group...")
             self.reporter.post_to_group(report)
+            print("✅ DEBUG: Report posted successfully")
             
         except Exception as e:
             print(f"⚠️ Failed to send financial report: {e}")
+            import traceback
+            traceback.print_exc()
     
     async def _report_results(self, total_cycles: int):
         """Generate test report."""
