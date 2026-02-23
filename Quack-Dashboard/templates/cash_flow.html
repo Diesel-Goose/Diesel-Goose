@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greenhead Labs | Cash Flow</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <span class="logo-icon">🦆</span>
+            <span class="logo-text">Greenhead Labs</span>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="{{ url_for('dashboard') }}" class="nav-link"><span class="nav-icon">📊</span><span>Overview</span></a></li>
+            <li class="nav-item"><a href="{{ url_for('chris_dunn_page') }}" class="nav-link"><span class="nav-icon">📈</span><span>Chris Dunn</span></a></li>
+            <li class="nav-item"><a href="{{ url_for('financials_page') }}" class="nav-link"><span class="nav-icon">💰</span><span>Financials</span></a></li>
+            <li class="nav-item"><a href="{{ url_for('pnl_page') }}" class="nav-link"><span class="nav-icon">📉</span><span>P&L</span></a></li>
+            <li class="nav-item active"><a href="{{ url_for('cash_flow_page') }}" class="nav-link"><span class="nav-icon">💵</span><span>Cash Flow</span></a></li>
+            <li class="nav-item"><a href="{{ url_for('crypto_wallets_page') }}" class="nav-link"><span class="nav-icon">₿</span><span>Crypto Wallets</span></a></li>
+            <li class="nav-item"><a href="{{ url_for('diesel_goose_page') }}" class="nav-link"><span class="nav-icon">🤖</span><span>Diesel-Goose</span></a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="nav-link logout"><span class="nav-icon">🚪</span><span>Logout</span></a>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        <header class="header">
+            <div class="header-left">
+                <h1>💵 Cash Flow Dashboard</h1>
+                <p class="last-updated">Cash inflows, outflows, and liquidity</p>
+            </div>
+        </header>
+        
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">Cash on Hand</span>
+                    <span class="kpi-icon">💰</span>
+                </div>
+                <div class="kpi-value">$0.00</div>
+                <div class="kpi-change neutral">Current</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">Inflow (MTD)</span>
+                    <span class="kpi-icon">📥</span>
+                </div>
+                <div class="kpi-value">$0.00</div>
+                <div class="kpi-change neutral">Month to date</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">Outflow (MTD)</span>
+                    <span class="kpi-icon">📤</span>
+                </div>
+                <div class="kpi-value">$0.00</div>
+                <div class="kpi-change neutral">Month to date</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">Net Cash Flow</span>
+                    <span class="kpi-icon">📊</span>
+                </div>
+                <div class="kpi-value">$0.00</div>
+                <div class="kpi-change neutral">In - Out</div>
+            </div>
+        </section>
+        
+        <section class="dashboard-grid">
+            <div class="card card-large">
+                <div class="card-header">
+                    <h2>Cash Flow Statement</h2>
+                </div>
+                <div class="card-body">
+                    <div class="trading-stats">
+                        <h3 style="margin-bottom: 16px; color: var(--text-muted); font-size: 14px;">OPERATING ACTIVITIES</h3>
+                        <div class="stat-row"><span class="stat-label">Cash from Trading:</span><span class="stat-value" style="color: var(--success);">+$934.38</span></div>
+                        <div class="stat-row"><span class="stat-label">Other Operating:</span><span class="stat-value">$0.00</span></div>
+                        <div class="stat-row" style="border-top: 1px solid var(--border); margin-top: 8px; padding-top: 16px;">
+                            <span class="stat-label" style="font-weight: 600;">Net Operating Cash:</span>
+                            <span class="stat-value" style="font-weight: 600; color: var(--success);">+$934.38</span>
+                        </div>
+                        
+                        <h3 style="margin: 24px 0 16px; color: var(--text-muted); font-size: 14px;">INVESTING ACTIVITIES</h3>
+                        <div class="stat-row"><span class="stat-label">Capital Expenditures:</span><span class="stat-value">$0.00</span></div>
+                        <div class="stat-row"><span class="stat-label">Crypto Investments:</span><span class="stat-value">$0.00</span></div>
+                        <div class="stat-row" style="border-top: 1px solid var(--border); margin-top: 8px; padding-top: 16px;">
+                            <span class="stat-label" style="font-weight: 600;">Net Investing Cash:</span>
+                            <span class="stat-value" style="font-weight: 600;">$0.00</span>
+                        </div>
+                        
+                        <h3 style="margin: 24px 0 16px; color: var(--text-muted); font-size: 14px;">FINANCING ACTIVITIES</h3>
+                        <div class="stat-row"><span class="stat-label">Capital Contributions:</span><span class="stat-value">$0.00</span></div>
+                        <div class="stat-row"><span class="stat-label">Distributions:</span><span class="stat-value">$0.00</span></div>
+                        <div class="stat-row" style="border-top: 1px solid var(--border); margin-top: 8px; padding-top: 16px;">
+                            <span class="stat-label" style="font-weight: 600;">Net Financing Cash:</span>
+                            <span class="stat-value" style="font-weight: 600;">$0.00</span>
+                        </div>
+                        
+                        <div class="stat-row" style="border-top: 2px solid var(--border); margin-top: 16px; padding-top: 16px;">
+                            <span class="stat-label" style="font-weight: 700; font-size: 18px;">NET CASH FLOW:</span>
+                            <span class="stat-value" style="font-weight: 700; font-size: 18px; color: var(--success);">+$934.38</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2>Cash Conversion Cycle</h2>
+                </div>
+                <div class="card-body">
+                    <div style="text-align: center; padding: 40px 0;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">⚡</div>
+                        <p style="color: var(--text-muted);">Instant execution</p>
+                        <p style="margin-top: 12px; font-weight: 600;">No conversion delay</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2>Quick Actions</h2>
+                </div>
+                <div class="card-body">
+                    <div class="quick-actions">
+                        <a href="{{ url_for('chris_dunn_page') }}" class="action-btn">
+                            <span>📈</span><span>View Trading</span>
+                        </a>
+                        <a href="#" class="action-btn" onclick="alert('Bank connection coming soon')">
+                            <span>🏦</span><span>Connect Bank</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

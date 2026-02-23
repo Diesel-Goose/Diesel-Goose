@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greenhead Labs | Chris Dunn Trading</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <span class="logo-icon">🦆</span>
+            <span class="logo-text">Greenhead Labs</span>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="{{ url_for('dashboard') }}" class="nav-link">
+                    <span class="nav-icon">📊</span>
+                    <span>Overview</span>
+                </a>
+            </li>
+            <li class="nav-item active">
+                <a href="{{ url_for('chris_dunn_page') }}" class="nav-link">
+                    <span class="nav-icon">📈</span>
+                    <span>Chris Dunn</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('financials_page') }}" class="nav-link">
+                    <span class="nav-icon">💰</span>
+                    <span>Financials</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('pnl_page') }}" class="nav-link">
+                    <span class="nav-icon">📉</span>
+                    <span>P&L</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('cash_flow_page') }}" class="nav-link">
+                    <span class="nav-icon">💵</span>
+                    <span>Cash Flow</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('crypto_wallets_page') }}" class="nav-link">
+                    <span class="nav-icon">₿</span>
+                    <span>Crypto Wallets</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('diesel_goose_page') }}" class="nav-link">
+                    <span class="nav-icon">🤖</span>
+                    <span>Diesel-Goose</span>
+                </a>
+            </li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="nav-link logout">
+                <span class="nav-icon">🚪</span>
+                <span>Logout</span>
+            </a>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        <header class="header">
+            <div class="header-left">
+                <h1>🦆 Chris Dunn Trading Dashboard</h1>
+                <p class="last-updated">Lead XRPL Analyst • Paper Trading Mode</p>
+            </div>
+            <div class="header-right">
+                <div class="status-badge">
+                    <span class="status-dot online"></span>
+                    <span>Live Trading Data</span>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Trading KPIs -->
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">Total Trades</span>
+                    <span class="kpi-icon">📊</span>
+                </div>
+                <div class="kpi-value" id="cd-total-trades">--</div>
+                <div class="kpi-change neutral">All time</div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">Win Rate</span>
+                    <span class="kpi-icon">🎯</span>
+                </div>
+                <div class="kpi-value" id="cd-win-rate">--</div>
+                <div class="kpi-change positive">Profitable</div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">XRP Profit</span>
+                    <span class="kpi-icon">💎</span>
+                </div>
+                <div class="kpi-value" id="cd-xrp-profit">--</div>
+                <div class="kpi-change positive" id="cd-xrp-change">Live price: $1.35</div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">USD Value</span>
+                    <span class="kpi-icon">💵</span>
+                </div>
+                <div class="kpi-value" id="cd-usd-value">--</div>
+                <div class="kpi-change positive">Realized P&L</div>
+            </div>
+        </section>
+        
+        <!-- Charts Row -->
+        <section class="dashboard-grid" style="grid-template-columns: 2fr 1fr;">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Trading Performance Over Time</h2>
+                </div>
+                <div class="card-body">
+                    <canvas id="tradingChart" height="300"></canvas>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2>Strategy Distribution</h2>
+                </div>
+                <div class="card-body">
+                    <canvas id="strategyChart" height="300"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Detailed Stats -->
+        <section class="dashboard-grid" style="grid-template-columns: 1fr 1fr; margin-top: 24px;">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Trade Statistics</h2>
+                </div>
+                <div class="card-body">
+                    <div class="trading-stats">
+                        <div class="stat-row">
+                            <span class="stat-label">Winning Trades:</span>
+                            <span class="stat-value" id="cd-wins" style="color: var(--success);">--</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Losing Trades:</span>
+                            <span class="stat-value" id="cd-losses" style="color: var(--danger);">--</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Current Strategy:</span>
+                            <span class="stat-value" id="cd-current-strategy">--</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">XRP Price (Live):</span>
+                            <span class="stat-value" id="cd-live-price">--</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Trading Mode:</span>
+                            <span class="stat-value">Paper/Sandbox</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2>Recent Activity Log</h2>
+                </div>
+                <div class="card-body">
+                    <div id="activity-log" style="max-height: 250px; overflow-y: auto;">
+                        <p style="color: var(--text-muted);">Loading recent trades...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    <script>
+        // Initialize charts when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Trading performance chart (placeholder)
+            const ctx1 = document.getElementById('tradingChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: ['Day 1', 'Day 2', 'Day 3'],
+                    datasets: [{
+                        label: 'Cumulative P&L (XRP)',
+                        data: [100, 400, 692],
+                        borderColor: '#00d9a5',
+                        backgroundColor: 'rgba(0, 217, 165, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#f5f5f5' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            grid: { color: '#2d2d44' },
+                            ticks: { color: '#a0a0a0' }
+                        },
+                        x: {
+                            grid: { color: '#2d2d44' },
+                            ticks: { color: '#a0a0a0' }
+                        }
+                    }
+                }
+            });
+            
+            // Strategy distribution chart
+            const ctx2 = document.getElementById('strategyChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Market Maker', 'Arbitrage', 'Momentum'],
+                    datasets: [{
+                        data: [60, 25, 15],
+                        backgroundColor: ['#0f3460', '#e94560', '#00d9a5']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: '#f5f5f5' }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

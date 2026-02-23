@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greenhead Labs | Crypto Wallets</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <span class="logo-icon">🦆</span>
+            <span class="logo-text">Greenhead Labs</span>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="{{ url_for('dashboard') }}" class="nav-link"><span class="nav-icon">📊</span><span>Overview</span></a></li>
+            <li class="nav-item"><a href="{{ url_for('chris_dunn_page') }}" class="nav-link"><span class="nav-icon">📈</span><span>Chris Dunn</span></a></li>
+            <li class="nav-item"><a href="{{ url_for('financials_page') }}" class="nav-link"><span class="nav-icon">💰</span><span>Financials</span></a></li>
+            <li class="nav-item"><a href="{{ url_for('pnl_page') }}" class="nav-link"><span class="nav-icon">📉</span><span>P&L</span></a></li>
+            <li class="nav-item"><a href="{{ url_for('cash_flow_page') }}" class="nav-link"><span class="nav-icon">💵</span><span>Cash Flow</span></a></li>
+            <li class="nav-item active"><a href="{{ url_for('crypto_wallets_page') }}" class="nav-link"><span class="nav-icon">₿</span><span>Crypto Wallets</span></a></li>
+            <li class="nav-item"><a href="{{ url_for('diesel_goose_page') }}" class="nav-link"><span class="nav-icon">🤖</span><span>Diesel-Goose</span></a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="nav-link logout"><span class="nav-icon">🚪</span><span>Logout</span></a>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        <header class="header">
+            <div class="header-left">
+                <h1>₿ Crypto Wallet Tracking</h1>
+                <p class="last-updated">Multi-chain asset monitoring</p>
+            </div>
+            <div class="header-right">
+                <div class="status-badge">
+                    <span class="status-dot online"></span>
+                    <span>XRP: $1.35</span>
+                </div>
+            </div>
+        </header>
+        
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">Total Crypto Value</span>
+                    <span class="kpi-icon">💎</span>
+                </div>
+                <div class="kpi-value">$0.00</div>
+                <div class="kpi-change neutral">Connect wallets</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">XRP Holdings</span>
+                    <span class="kpi-icon">⚡</span>
+                </div>
+                <div class="kpi-value">0 XRP</div>
+                <div class="kpi-change neutral">$0.00 USD</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">Connected Wallets</span>
+                    <span class="kpi-icon">👛</span>
+                </div>
+                <div class="kpi-value">0</div>
+                <div class="kpi-change neutral">Add wallets</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">24h Change</span>
+                    <span class="kpi-icon">📊</span>
+                </div>
+                <div class="kpi-value">0.00%</div>
+                <div class="kpi-change neutral">No data</div>
+            </div>
+        </section>
+        
+        <section class="dashboard-grid">
+            <div class="card card-large">
+                <div class="card-header">
+                    <h2>Wallet Overview</h2>
+                    <button class="btn btn-sm" onclick="alert('Wallet connection coming soon')">+ Add Wallet</button>
+                </div>
+                <div class="card-body">
+                    <div style="text-align: center; padding: 60px 20px;">
+                        <div style="font-size: 64px; margin-bottom: 20px;">👛</div>
+                        <h3 style="margin-bottom: 12px;">No Wallets Connected</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 24px;">Connect your Xaman wallet or other crypto wallets to track your assets in real-time.</p>
+                        <button class="btn btn-primary" onclick="alert('Xaman integration coming soon')">Connect Xaman Wallet</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2>Supported Chains</h2>
+                </div>
+                <div class="card-body">
+                    <ul class="system-list">
+                        <li><span>⚡ XRP Ledger</span><span class="system-status online"><span class="status-dot online"></span>Active</span></li>
+                        <li><span>₿ Bitcoin</span><span class="system-status offline"><span class="status-dot offline"></span>Coming Soon</span></li>
+                        <li><span>Ξ Ethereum</span><span class="system-status offline"><span class="status-dot offline"></span>Coming Soon</span></li>
+                        <li><span>🔺 AVAX</span><span class="system-status offline"><span class="status-dot offline"></span>Coming Soon</span></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2>Quick Actions</h2>
+                </div>
+                <div class="card-body">
+                    <div class="quick-actions">
+                        <a href="#" class="action-btn" onclick="alert('Xaman integration coming soon')">
+                            <span>⚡</span><span>Connect Xaman</span>
+                        </a>
+                        <a href="#" class="action-btn" onclick="alert('Manual entry coming soon')">
+                            <span>✏️</span><span>Manual Entry</span>
+                        </a>
+                        <a href="{{ url_for('chris_dunn_page') }}" class="action-btn">
+                            <span>📈</span><span>View Trading</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

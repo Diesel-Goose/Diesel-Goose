@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greenhead Labs | Diesel-Goose Systems</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <span class="logo-icon">🦆</span>
+            <span class="logo-text">Greenhead Labs</span>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="{{ url_for('dashboard') }}" class="nav-link"><span class="nav-icon">📊</span><span>Overview</span></a></li>
+            <li class="nav-item"><a href="{{ url_for('chris_dunn_page') }}" class="nav-link"><span class="nav-icon">📈</span><span>Chris Dunn</span></a></li>
+            <li class="nav-item"><a href="{{ url_for('financials_page') }}" class="nav-link"><span class="nav-icon">💰</span><span>Financials</span></a></li>
+            <li class="nav-item"><a href="{{ url_for('pnl_page') }}" class="nav-link"><span class="nav-icon">📉</span><span>P&L</span></a></li>
+            <li class="nav-item"><a href="{{ url_for('cash_flow_page') }}" class="nav-link"><span class="nav-icon">💵</span><span>Cash Flow</span></a></li>
+            <li class="nav-item"><a href="{{ url_for('crypto_wallets_page') }}" class="nav-link"><span class="nav-icon">₿</span><span>Crypto Wallets</span></a></li>
+            <li class="nav-item active"><a href="{{ url_for('diesel_goose_page') }}" class="nav-link"><span class="nav-icon">🤖</span><span>Diesel-Goose</span></a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="nav-link logout"><span class="nav-icon">🚪</span><span>Logout</span></a>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        <header class="header">
+            <div class="header-left">
+                <h1>🤖 Diesel-Goose Systems</h1>
+                <p class="last-updated">AI Agent Infrastructure & Monitoring</p>
+            </div>
+        </header>
+        
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">Active Agents</span>
+                    <span class="kpi-icon">🤖</span>
+                </div>
+                <div class="kpi-value">3</div>
+                <div class="kpi-change positive">All operational</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">System Uptime</span>
+                    <span class="kpi-icon">⏱️</span>
+                </div>
+                <div class="kpi-value">99.9%</div>
+                <div class="kpi-change positive">Last 30 days</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">API Calls</span>
+                    <span class="kpi-icon">🔌</span>
+                </div>
+                <div class="kpi-value">--</div>
+                <div class="kpi-change neutral">Today</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">Last Heartbeat</span>
+                    <span class="kpi-icon">💓</span>
+                </div>
+                <div class="kpi-value" id="last-heartbeat">Just now</div>
+                <div class="kpi-change positive">Healthy</div>
+            </div>
+        </section>
+        
+        <section class="dashboard-grid">
+            <div class="card card-large">
+                <div class="card-header">
+                    <h2>Active Agents</h2>
+                </div>
+                <div class="card-body">
+                    <ul class="system-list">
+                        <li>
+                            <span>
+                                <strong>Chris Dunn</strong><br>
+                                <small style="color: var(--text-muted);">Lead XRPL Analyst</small>
+                            </span>
+                            <span class="system-status online">
+                                <span class="status-dot online"></span>Online
+                            </span>
+                        </li>
+                        <li>
+                            <span>
+                                <strong>Self-Monitor</strong><br>
+                                <small style="color: var(--text-muted);">System Health Monitor</small>
+                            </span>
+                            <span class="system-status online">
+                                <span class="status-dot online"></span>Online
+                            </span>
+                        </li>
+                        <li>
+                            <span>
+                                <strong>Simple Reporter</strong><br>
+                                <small style="color: var(--text-muted);">Trading Reporter</small>
+                            </span>
+                            <span class="system-status online">
+                                <span class="status-dot online"></span>Online
+                            </span>
+                        </li>
+                        <li>
+                            <span>
+                                <strong>Watchdog</strong><br>
+                                <small style="color: var(--text-muted);">Auto-Recovery</small>
+                            </span>
+                            <span class="system-status online">
+                                <span class="status-dot online"></span>Online
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2>System Resources</h2>
+                </div>
+                <div class="card-body">
+                    <div class="trading-stats">
+                        <div class="stat-row">
+                            <span class="stat-label">Disk Usage:</span>
+                            <span class="stat-value" style="color: var(--success);">14%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">GitHub Sync:</span>
+                            <span class="stat-value" style="color: var(--success);">Operational</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">OpenClaw Cron:</span>
+                            <span class="stat-value" style="color: var(--success);">3 Jobs Active</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Logs Directory:</span>
+                            <span class="stat-value" style="color: var(--success);">Healthy</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2>Agent Roster</h2>
+                </div>
+                <div class="card-body">
+                    <div class="quick-actions">
+                        <div class="action-btn">
+                            <span>🦆</span>
+                            <span>DieselGoose Core</span>
+                        </div>
+                        <div class="action-btn">
+                            <span>👔</span>
+                            <span>CEO Executor</span>
+                        </div>
+                        <div class="action-btn">
+                            <span>📊</span>
+                            <span>Chris Dunn CFO</span>
+                        </div>
+                        <div class="action-btn">
+                            <span>🛡️</span>
+                            <span>Security Audit</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found | Greenhead Labs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-box" style="text-align: center;">
+            <div class="logo">
+                <span class="logo-icon">🦆</span>
+                <h1>404</h1>
+            </div>
+            <p class="subtitle">Page Not Found</p>
+            <p style="color: var(--text-muted); margin-bottom: 24px;">The page you're looking for doesn't exist.</p>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-block">Go to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>

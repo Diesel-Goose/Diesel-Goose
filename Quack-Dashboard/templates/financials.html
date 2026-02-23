@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greenhead Labs | Financial Overview</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <span class="logo-icon">🦆</span>
+            <span class="logo-text">Greenhead Labs</span>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="{{ url_for('dashboard') }}" class="nav-link"><span class="nav-icon">📊</span><span>Overview</span></a></li>
+            <li class="nav-item"><a href="{{ url_for('chris_dunn_page') }}" class="nav-link"><span class="nav-icon">📈</span><span>Chris Dunn</span></a></li>
+            <li class="nav-item active"><a href="{{ url_for('financials_page') }}" class="nav-link"><span class="nav-icon">💰</span><span>Financials</span></a></li>
+            <li class="nav-item"><a href="{{ url_for('pnl_page') }}" class="nav-link"><span class="nav-icon">📉</span><span>P&L</span></a></li>
+            <li class="nav-item"><a href="{{ url_for('cash_flow_page') }}" class="nav-link"><span class="nav-icon">💵</span><span>Cash Flow</span></a></li>
+            <li class="nav-item"><a href="{{ url_for('crypto_wallets_page') }}" class="nav-link"><span class="nav-icon">₿</span><span>Crypto Wallets</span></a></li>
+            <li class="nav-item"><a href="{{ url_for('diesel_goose_page') }}" class="nav-link"><span class="nav-icon">🤖</span><span>Diesel-Goose</span></a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="nav-link logout"><span class="nav-icon">🚪</span><span>Logout</span></a>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        <header class="header">
+            <div class="header-left">
+                <h1>💰 Financial Overview</h1>
+                <p class="last-updated">Company financial position and metrics</p>
+            </div>
+        </header>
+        
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">Total Assets</span>
+                    <span class="kpi-icon">🏦</span>
+                </div>
+                <div class="kpi-value">$0.00</div>
+                <div class="kpi-change neutral">Pending bank connection</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">Total Liabilities</span>
+                    <span class="kpi-icon">📋</span>
+                </div>
+                <div class="kpi-value">$0.00</div>
+                <div class="kpi-change neutral">No debt</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">Equity</span>
+                    <span class="kpi-icon">📈</span>
+                </div>
+                <div class="kpi-value">$0.00</div>
+                <div class="kpi-change neutral">Assets - Liabilities</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">Monthly Burn</span>
+                    <span class="kpi-icon">🔥</span>
+                </div>
+                <div class="kpi-value">$0.00</div>
+                <div class="kpi-change neutral">No operational costs</div>
+            </div>
+        </section>
+        
+        <section class="dashboard-grid">
+            <div class="card card-large">
+                <div class="card-header">
+                    <h2>Balance Sheet</h2>
+                </div>
+                <div class="card-body">
+                    <div class="trading-stats">
+                        <div class="stat-row"><span class="stat-label">Cash & Equivalents:</span><span class="stat-value">$0.00</span></div>
+                        <div class="stat-row"><span class="stat-label">Crypto Holdings:</span><span class="stat-value">$0.00</span></div>
+                        <div class="stat-row"><span class="stat-label">Accounts Receivable:</span><span class="stat-value">$0.00</span></div>
+                        <div class="stat-row"><span class="stat-label">Fixed Assets:</span><span class="stat-value">$0.00</span></div>
+                        <div class="stat-row" style="border-top: 2px solid var(--border); margin-top: 16px; padding-top: 16px;">
+                            <span class="stat-label" style="font-weight: 700;">TOTAL ASSETS:</span>
+                            <span class="stat-value" style="font-weight: 700;">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2>Cash Runway</h2>
+                </div>
+                <div class="card-body">
+                    <div style="text-align: center; padding: 40px 0;">
+                        <div style="font-size: 64px; margin-bottom: 16px;">∞</div>
+                        <p style="color: var(--text-muted);">Infinite runway</p>
+                        <p style="font-size: 14px; color: var(--text-muted); margin-top: 8px;">No burn rate currently</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2>Quick Actions</h2>
+                </div>
+                <div class="card-body">
+                    <div class="quick-actions">
+                        <a href="#" class="action-btn" onclick="alert('Connect bank account feature coming soon')">
+                            <span>🏦</span><span>Connect Bank</span>
+                        </a>
+                        <a href="{{ url_for('crypto_wallets_page') }}" class="action-btn">
+                            <span>₿</span><span>View Crypto</span>
+                        </a>
+                        <a href="#" class="action-btn" onclick="alert('Export feature coming soon')">
+                            <span>📊</span><span>Export Report</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
