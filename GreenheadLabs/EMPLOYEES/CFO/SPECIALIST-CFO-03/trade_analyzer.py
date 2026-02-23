@@ -9,7 +9,7 @@ import re
 from datetime import datetime
 from pathlib import Path
 
-def analyze_trades(log_file='sandbox/audit.log'):
+def analyze_trades(log_file='/Users/dieselgoose/.openclaw/workspace/GreenheadLabs/EMPLOYEES/CFO/SPECIALIST-CFO-03/sandbox/audit.log'):
     """Analyze real trades from audit log."""
     trades = []
     
@@ -56,10 +56,10 @@ def analyze_trades(log_file='sandbox/audit.log'):
     profitable_trades = sum(1 for t in trades if t['signal'] == 'sell' and t['price'] > 0.50)
     win_rate = (profitable_trades / total_sold * 100) if sells else 0
     
-    # Estimate XRP P&L (assuming average position)
-    avg_position = sum(t['amount'] for t in trades) / len(trades) if trades else 0
+    # Calculate XRP P&L using current XRP price (~$1.34)
+    XRP_PRICE = 1.34
     pnl_pct = (pnl_usd / total_bought * 100) if total_bought else 0
-    pnl_xrp = pnl_usd / 0.50  # Assuming $0.50/XRP
+    pnl_xrp = pnl_usd / XRP_PRICE  # Convert USD profit to XRP at current price
     
     total_volume = sum(t['value'] for t in trades)
     
