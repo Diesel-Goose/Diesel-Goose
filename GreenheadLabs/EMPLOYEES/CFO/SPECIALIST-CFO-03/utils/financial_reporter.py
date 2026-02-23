@@ -98,9 +98,9 @@ class FinancialReporter:
         
         return "\n".join(lines)
     
-    async def post_to_group(self, message: str):
+    def post_to_group(self, message: str):
         """
-        Post report to Telegram group.
+        Post report to Telegram group (synchronous - no async dependency).
         """
         group_id = self.config.get('group_chat_id')
         
@@ -110,7 +110,7 @@ class FinancialReporter:
             return
         
         try:
-            import aiohttp
+            import requests
             
             token = self.config.get('bot_token')
             url = f"https://api.telegram.org/bot{token}/sendMessage"
@@ -121,15 +121,17 @@ class FinancialReporter:
                 'parse_mode': 'HTML'
             }
             
-            async with aiohttp.ClientSession() as session:
-                async with session.post(url, json=payload) as response:
-                    if response.status == 200:
-                        self.logger.info("Financial report posted to group")
-                    else:
-                        self.logger.error(f"Failed to post: {response.status}")
+            response = requests.post(url, json=payload, timeout=10)
+            if response.status_code == 200:
+                self.logger.info("Financial report posted to group")
+                print(f"\n📊 REPORT SENT TO GROUP:\n{message}\n")
+            else:
+                self.logger.error(f"Failed to post: {response.status_code}")
+                print(f"\n❌ FAILED TO SEND REPORT: {response.status_code}\n")
         
         except Exception as e:
             self.logger.error(f"Error posting report: {e}")
+            print(f"\n❌ ERROR SENDING REPORT: {e}\n")
     
     def _calculate_profit_percentage(self, pnl: float) -> float:
         """Calculate profit percentage."""

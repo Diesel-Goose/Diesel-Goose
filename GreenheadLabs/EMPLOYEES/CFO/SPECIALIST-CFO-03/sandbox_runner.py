@@ -148,7 +148,7 @@ class SandboxedChrisDunn:
                     # Check if 5 minutes passed — send financial report (Chairman: 5-min intervals for testing)
                     time_since_report = (datetime.utcnow() - self.last_report_time).total_seconds()
                     if time_since_report >= 300:  # 5 minutes
-                        await self._send_financial_report(strategy)
+                        self._send_financial_report(strategy)
                         self.last_report_time = datetime.utcnow()
                     
                 except ScopeViolation as e:
@@ -216,9 +216,10 @@ Review logs immediately.
         with open(log_file, 'a') as f:
             f.write(f"{datetime.utcnow().isoformat()} | TRADE | {trade}\n")
     
-    async def _send_financial_report(self, strategy: str):
-        """Send 30-minute financial report to Telegram group."""
+    def _send_financial_report(self, strategy: str):
+        """Send financial report to Telegram group (synchronous)."""
         if not self.reporter:
+            print("⚠️ Reporter not available")
             return
         
         try:
@@ -229,14 +230,11 @@ Review logs immediately.
             # Generate report
             report = self.reporter.generate_paper_report(stats)
             
-            # Post to group
-            await self.reporter.post_to_group(report)
-            
-            # Also log it
-            print(f"\n📊 FINANCIAL REPORT SENT:\n{report}\n")
+            # Post to group (synchronous)
+            self.reporter.post_to_group(report)
             
         except Exception as e:
-            print(f"⚠️  Failed to send financial report: {e}")
+            print(f"⚠️ Failed to send financial report: {e}")
     
     async def _report_results(self, total_cycles: int):
         """Generate test report."""
