@@ -3,7 +3,8 @@
 # Replaces broken LaunchAgent with user-space daemon
 # Logs health checks, validates code integrity, triggers heartbeats
 
-set -euo pipefail
+# Don't exit on errors - handle them gracefully
+set -uo pipefail
 
 WORKSPACE="/Users/dieselgoose/.openclaw/workspace"
 DUCKPOND="/Users/dieselgoose/.openclaw/workspace"
@@ -155,15 +156,14 @@ monitor_loop() {
         cycle=$((cycle + 1))
         log "--- Cycle $cycle ---"
         
-        # Run safety checks
-        safety_check
-        local safety_result=$?
+        # Run safety checks (don't exit on warnings)
+        safety_check || true
         
         # Trigger heartbeat
-        trigger_heartbeat
+        trigger_heartbeat || true
         
         # Sync with GitHub
-        sync_github
+        sync_github || true
         
         # Log status
         local next_run=$(date -v+${CADENCE_MINUTES}M +"%H:%M:%S")
