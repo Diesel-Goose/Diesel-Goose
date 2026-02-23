@@ -1,0 +1,13 @@
+# Greenhead Labs Dashboard - Replit Configuration
+# This file tells Replit how to run the application
+
+run = "python app.py"
+entrypoint = "app.py"
+modules = ["python-3.10"]
+
+[nix]
+schannel = "stable-22_11"
+
+[deployment]
+run = ["sh", "-c", "python app.py"]
+deploymentTarget = "cloudrun"

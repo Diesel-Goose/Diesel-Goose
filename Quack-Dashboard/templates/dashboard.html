@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greenhead Labs | Executive Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <span class="logo-icon">🦆</span>
+            <span class="logo-text">Greenhead Labs</span>
+        </div>
+        
+        <ul class="nav-menu">
+            <li class="nav-item active">
+                <a href="{{ url_for('dashboard') }}" class="nav-link">
+                    <span class="nav-icon">📊</span>
+                    <span>Overview</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('chris_dunn_page') }}" class="nav-link">
+                    <span class="nav-icon">📈</span>
+                    <span>Chris Dunn</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('financials_page') }}" class="nav-link">
+                    <span class="nav-icon">💰</span>
+                    <span>Financials</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('pnl_page') }}" class="nav-link">
+                    <span class="nav-icon">📉</span>
+                    <span>P&L</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('cash_flow_page') }}" class="nav-link">
+                    <span class="nav-icon">💵</span>
+                    <span>Cash Flow</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('crypto_wallets_page') }}" class="nav-link">
+                    <span class="nav-icon">₿</span>
+                    <span>Crypto Wallets</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('diesel_goose_page') }}" class="nav-link">
+                    <span class="nav-icon">🤖</span>
+                    <span>Diesel-Goose</span>
+                </a>
+            </li>
+        </ul>
+        
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="nav-link logout">
+                <span class="nav-icon">🚪</span>
+                <span>Logout</span>
+            </a>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1>Executive Dashboard</h1>
+                <p class="last-updated">Last updated: <span id="last-updated">{{ current_time }}</span></p>
+            </div>
+            <div class="header-right">
+                <div class="status-badge">
+                    <span class="status-dot online"></span>
+                    <span>All Systems Operational</span>
+                </div>
+            </div>
+        </header>
+        
+        <!-- KPI Cards -->
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">Total Revenue</span>
+                    <span class="kpi-icon">💵</span>
+                </div>
+                <div class="kpi-value">$0.00</div>
+                <div class="kpi-change neutral">Pending data</div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">Chris Dunn P&L</span>
+                    <span class="kpi-icon">📈</span>
+                </div>
+                <div class="kpi-value" id="chris-pnl">Loading...</div>
+                <div class="kpi-change positive" id="chris-winrate">Loading...</div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">Active Systems</span>
+                    <span class="kpi-icon">⚡</span>
+                </div>
+                <div class="kpi-value" id="active-systems">Loading...</div>
+                <div class="kpi-change positive">Online</div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">Cash Runway</span>
+                    <span class="kpi-icon">🏃</span>
+                </div>
+                <div class="kpi-value">∞</div>
+                <div class="kpi-change neutral">No burn rate</div>
+            </div>
+        </section>
+        
+        <!-- Main Dashboard Grid -->
+        <section class="dashboard-grid">
+            <!-- Chris Dunn Trading Widget -->
+            <div class="card card-large">
+                <div class="card-header">
+                    <h2>🦆 Chris Dunn Trading Performance</h2>
+                    <a href="{{ url_for('chris_dunn_page') }}" class="btn btn-sm">View Details →</a>
+                </div>
+                <div class="card-body">
+                    <div class="trading-stats" id="trading-stats">
+                        <div class="stat-row">
+                            <span class="stat-label">Total Trades:</span>
+                            <span class="stat-value" id="cd-trades">--</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Win Rate:</span>
+                            <span class="stat-value" id="cd-winrate">--</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">XRP Profit:</span>
+                            <span class="stat-value" id="cd-xrp">--</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">USD Value:</span>
+                            <span class="stat-value" id="cd-usd">--</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Strategy:</span>
+                            <span class="stat-value" id="cd-strategy">--</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">XRP Price:</span>
+                            <span class="stat-value" id="cd-price">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- System Status Widget -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>System Status</h2>
+                </div>
+                <div class="card-body">
+                    <ul class="system-list" id="system-list">
+                        <li>Loading...</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Quick Actions</h2>
+                </div>
+                <div class="card-body">
+                    <div class="quick-actions">
+                        <a href="{{ url_for('chris_dunn_page') }}" class="action-btn">
+                            <span>📊</span>
+                            <span>Trading Dashboard</span>
+                        </a>
+                        <a href="{{ url_for('crypto_wallets_page') }}" class="action-btn">
+                            <span>₿</span>
+                            <span>Check Wallets</span>
+                        </a>
+                        <a href="{{ url_for('diesel_goose_page') }}" class="action-btn">
+                            <span>🤖</span>
+                            <span>System Health</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
