@@ -20,8 +20,8 @@ from typing import Optional
 # ──────────────────────────────────────────────────────────────────────────────
 # CONFIG – Adjust only if repo structure changes
 # ──────────────────────────────────────────────────────────────────────────────
-REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Diesel-Goose root
-HEARTBEAT_PATH = os.path.join(REPO_ROOT, "..", "HEARTBEAT.md")  # From Brain to root
+REPO_ROOT = "/Users/dieselgoose/.openclaw/workspace"  # Diesel-Goose root
+HEARTBEAT_PATH = os.path.join(REPO_ROOT, "HEARTBEAT.md")  # Direct path to heartbeat
 VERSION = "v1.8.0"  # Bump on major feature adds
 LOG_SECTION_MARKER = "## LOG ENTRIES (Append-only – scripts add below this line)"
 
