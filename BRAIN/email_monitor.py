@@ -20,7 +20,7 @@ SENDER_FILTER = "nathan@greenhead.io"
 
 # Use credentials from secure storage
 CREDENTIALS_FILE = Path.home() / ".openclaw" / "credentials" / "gmail-app-password.json"
-STATE_FILE = Path.home() / "Documents" / "HonkNode" / "Duck-Pond" / ".vault" / "email_state.json"
+STATE_FILE = Path.home() / ".openclaw" / "workspace" / ".vault" / "email_state.json"
 
 def load_credentials():
     """Load email credentials from secure storage"""

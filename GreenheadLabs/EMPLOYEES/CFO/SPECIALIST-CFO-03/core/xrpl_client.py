@@ -29,7 +29,7 @@ class XRPLClient:
         """Initialize Xaman API client for mobile approvals."""
         try:
             import sys
-            sys.path.insert(0, '/Users/dieselgoose/Honk-Node/Duck-Pond/System')
+            sys.path.insert(0, '/Users/dieselgoose/.openclaw/workspace/GreenheadLabs/System')
             from xaman_client import XamanClient
             
             self.xaman = XamanClient()
