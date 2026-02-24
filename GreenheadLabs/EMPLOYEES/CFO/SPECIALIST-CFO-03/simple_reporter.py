@@ -15,10 +15,137 @@ import os
 BOT_TOKEN = "8350022484:AAE93G6trBzE6fhahPtdCKWZke6ZubGTaGQ"
 GROUP_CHAT_ID = "-1003885436287"
 
+# Greenhead Labs Website API
+WEBSITE_API_URL = "https://greenheadlabs.xyz/api/finance/trader"
+WEBSITE_API_KEY = "gl_10a01de0cf651371841931c6e7798798d2f714267ef522dd4f27cd0338dfc6f3"
+
 # Paths
 LOG_DIR = Path(__file__).parent / "logs"
 TRADES_LOG = LOG_DIR / "trades.log"
 CONTINUOUS_LOG = LOG_DIR / "continuous_trades.log"
+
+# Track which trades we've already sent to website
+SENT_TRADES_FILE = LOG_DIR / ".sent_trades_cache.json"
+
+
+def load_sent_trades_cache():
+    """Load cache of trades already sent to website."""
+    if SENT_TRADES_FILE.exists():
+        try:
+            with open(SENT_TRADES_FILE, 'r') as f:
+                return set(json.load(f))
+        except:
+            pass
+    return set()
+
+
+def save_sent_trades_cache(sent_trades):
+    """Save cache of trades already sent to website."""
+    try:
+        with open(SENT_TRADES_FILE, 'w') as f:
+            json.dump(list(sent_trades), f)
+    except Exception as e:
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] ⚠️ Failed to save cache: {e}")
+
+
+def send_trade_to_website(trade):
+    """Send individual trade to Greenhead Labs website API."""
+    try:
+        # Format payload as the API expects
+        payload = {
+            'trades': [{
+                'trader_name': 'Chris Dunn',
+                'trader_id': 'chris_dunn_001',
+                'timestamp': trade.get('timestamp', datetime.now().isoformat()),
+                'strategy': trade.get('strategy', 'unknown'),
+                'side': trade.get('side', 'buy'),
+                'amount': trade.get('amount', 0),
+                'price': trade.get('price', 0),
+                'pnl': trade.get('pnl', 0),
+                'asset': 'XRP',
+                'mode': 'paper'
+            }],
+            'stats': {
+                'trader_name': 'Chris Dunn',
+                'trader_id': 'chris_dunn_001',
+                'total_pnl_xrp': trade.get('pnl', 0),
+                'xrp_price': 1.35,
+                'mode': 'paper',
+                'last_trade_at': trade.get('timestamp', datetime.now().isoformat()),
+                'sent_at': datetime.now().isoformat()
+            }
+        }
+        
+        headers = {
+            'Content-Type': 'application/json',
+            'X-API-Key': WEBSITE_API_KEY,
+            'Authorization': f'Bearer {WEBSITE_API_KEY}'
+        }
+        
+        response = requests.post(
+            WEBSITE_API_URL,
+            json=payload,
+            headers=headers,
+            timeout=10
+        )
+        
+        if response.status_code in [200, 201]:
+            print(f"[{datetime.now().strftime('%H:%M:%S')}] ✅ Trade sent to website: {trade.get('timestamp', 'now')}")
+            return True
+        else:
+            print(f"[{datetime.now().strftime('%H:%M:%S')}] ⚠️ Website API returned {response.status_code}: {response.text[:100]}")
+            return False
+            
+    except Exception as e:
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] ❌ Failed to send trade to website: {e}")
+        return False
+
+
+def sync_trades_to_website():
+    """Sync all new trades to Greenhead Labs website."""
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] 🔄 Syncing trades to website...")
+    
+    # Load cache of already sent trades
+    sent_trades = load_sent_trades_cache()
+    
+    # Read all trades from log
+    new_trades = []
+    if TRADES_LOG.exists():
+        with open(TRADES_LOG, 'r') as f:
+            for line in f:
+                parts = line.strip().split(',')
+                if len(parts) >= 6:
+                    try:
+                        trade_id = f"{parts[0]}_{parts[1]}_{parts[2]}_{parts[3]}"
+                        if trade_id not in sent_trades:
+                            new_trades.append({
+                                'timestamp': parts[0],
+                                'strategy': parts[1],
+                                'side': parts[2],
+                                'amount': float(parts[3]),
+                                'price': float(parts[4]),
+                                'pnl': float(parts[5])
+                            })
+                            sent_trades.add(trade_id)
+                    except (ValueError, IndexError):
+                        continue
+    
+    if not new_trades:
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] ℹ️ No new trades to sync")
+        return 0
+    
+    # Send trades to website
+    success_count = 0
+    for trade in new_trades:
+        if send_trade_to_website(trade):
+            success_count += 1
+        time.sleep(0.1)  # Rate limiting
+    
+    # Save updated cache
+    save_sent_trades_cache(sent_trades)
+    
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] ✅ Synced {success_count}/{len(new_trades)} trades to website")
+    return success_count
 
 
 def get_xrp_price():
@@ -207,16 +334,28 @@ def send_report():
 
 
 def main():
-    """Send real trade reports every 5 minutes."""
+    """Send real trade reports every 5 minutes and sync to website."""
     print(f"[{datetime.now().strftime('%H:%M:%S')}] Chris Dunn REAL-TIME Reporter Started")
     print("Reading actual trade data from logs...")
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] 🌐 Website API: {WEBSITE_API_URL}")
     
-    # Send initial report
+    # Initial sync and report
+    sync_trades_to_website()
     send_report()
     
+    cycle = 0
     while True:
         time.sleep(300)  # 5 minutes
+        cycle += 1
+        
+        # Sync trades to website every cycle
+        sync_trades_to_website()
+        
+        # Send Telegram report
         send_report()
+        
+        # Log cycle completion
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] ✅ Cycle {cycle} complete")
 
 
 if __name__ == "__main__":
