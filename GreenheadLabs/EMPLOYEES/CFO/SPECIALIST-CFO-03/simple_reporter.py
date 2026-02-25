@@ -1,155 +1,46 @@
 #!/usr/bin/env python3
 """
-Chris Dunn — REAL-TIME Reporter Daemon
-Reads actual trade data from logs and sends accurate reports.
+Chris Dunn — 30-Minute Reporter Daemon
+Reads actual trade data from logs and sends formatted reports.
 """
 
 import time
 import json
 import requests
-from datetime import datetime
+import asyncio
+from datetime import datetime, timedelta
 from pathlib import Path
-import os
 
 # Telegram config
 BOT_TOKEN = "8350022484:AAE93G6trBzE6fhahPtdCKWZke6ZubGTaGQ"
 GROUP_CHAT_ID = "-1003885436287"
 
-# Greenhead Labs Website API
-WEBSITE_API_URL = "https://greenheadlabs.xyz/api/finance/trader"
-WEBSITE_API_KEY = "gl_10a01de0cf651371841931c6e7798798d2f714267ef522dd4f27cd0338dfc6f3"
-
 # Paths
 LOG_DIR = Path(__file__).parent / "logs"
 TRADES_LOG = LOG_DIR / "trades.log"
 CONTINUOUS_LOG = LOG_DIR / "continuous_trades.log"
+PRODUCTION_LOG = LOG_DIR / "production.log"
 
-# Track which trades we've already sent to website
-SENT_TRADES_FILE = LOG_DIR / ".sent_trades_cache.json"
+# Session tracking
+SESSION_START_FILE = LOG_DIR / ".session_start"
 
 
-def load_sent_trades_cache():
-    """Load cache of trades already sent to website."""
-    if SENT_TRADES_FILE.exists():
+def get_session_start():
+    """Get or set session start time."""
+    if SESSION_START_FILE.exists():
         try:
-            with open(SENT_TRADES_FILE, 'r') as f:
-                return set(json.load(f))
+            with open(SESSION_START_FILE, 'r') as f:
+                return datetime.fromisoformat(f.read().strip())
         except:
             pass
-    return set()
-
-
-def save_sent_trades_cache(sent_trades):
-    """Save cache of trades already sent to website."""
-    try:
-        with open(SENT_TRADES_FILE, 'w') as f:
-            json.dump(list(sent_trades), f)
-    except Exception as e:
-        print(f"[{datetime.now().strftime('%H:%M:%S')}] ⚠️ Failed to save cache: {e}")
-
-
-def send_trade_to_website(trade):
-    """Send individual trade to Greenhead Labs website API."""
-    try:
-        # Format payload as the API expects
-        payload = {
-            'trades': [{
-                'trader_name': 'Chris Dunn',
-                'trader_id': 'chris_dunn_001',
-                'timestamp': trade.get('timestamp', datetime.now().isoformat()),
-                'strategy': trade.get('strategy', 'unknown'),
-                'side': trade.get('side', 'buy'),
-                'amount': trade.get('amount', 0),
-                'price': trade.get('price', 0),
-                'pnl': trade.get('pnl', 0),
-                'asset': 'XRP',
-                'mode': 'paper'
-            }],
-            'stats': {
-                'trader_name': 'Chris Dunn',
-                'trader_id': 'chris_dunn_001',
-                'total_pnl_xrp': trade.get('pnl', 0),
-                'xrp_price': 1.35,
-                'mode': 'paper',
-                'last_trade_at': trade.get('timestamp', datetime.now().isoformat()),
-                'sent_at': datetime.now().isoformat()
-            }
-        }
-        
-        headers = {
-            'Content-Type': 'application/json',
-            'X-API-Key': WEBSITE_API_KEY,
-            'Authorization': f'Bearer {WEBSITE_API_KEY}'
-        }
-        
-        response = requests.post(
-            WEBSITE_API_URL,
-            json=payload,
-            headers=headers,
-            timeout=10
-        )
-        
-        if response.status_code in [200, 201]:
-            print(f"[{datetime.now().strftime('%H:%M:%S')}] ✅ Trade sent to website: {trade.get('timestamp', 'now')}")
-            return True
-        else:
-            print(f"[{datetime.now().strftime('%H:%M:%S')}] ⚠️ Website API returned {response.status_code}: {response.text[:100]}")
-            return False
-            
-    except Exception as e:
-        print(f"[{datetime.now().strftime('%H:%M:%S')}] ❌ Failed to send trade to website: {e}")
-        return False
-
-
-def sync_trades_to_website():
-    """Sync all new trades to Greenhead Labs website."""
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] 🔄 Syncing trades to website...")
-    
-    # Load cache of already sent trades
-    sent_trades = load_sent_trades_cache()
-    
-    # Read all trades from log
-    new_trades = []
-    if TRADES_LOG.exists():
-        with open(TRADES_LOG, 'r') as f:
-            for line in f:
-                parts = line.strip().split(',')
-                if len(parts) >= 6:
-                    try:
-                        trade_id = f"{parts[0]}_{parts[1]}_{parts[2]}_{parts[3]}"
-                        if trade_id not in sent_trades:
-                            new_trades.append({
-                                'timestamp': parts[0],
-                                'strategy': parts[1],
-                                'side': parts[2],
-                                'amount': float(parts[3]),
-                                'price': float(parts[4]),
-                                'pnl': float(parts[5])
-                            })
-                            sent_trades.add(trade_id)
-                    except (ValueError, IndexError):
-                        continue
-    
-    if not new_trades:
-        print(f"[{datetime.now().strftime('%H:%M:%S')}] ℹ️ No new trades to sync")
-        return 0
-    
-    # Send trades to website
-    success_count = 0
-    for trade in new_trades:
-        if send_trade_to_website(trade):
-            success_count += 1
-        time.sleep(0.1)  # Rate limiting
-    
-    # Save updated cache
-    save_sent_trades_cache(sent_trades)
-    
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] ✅ Synced {success_count}/{len(new_trades)} trades to website")
-    return success_count
+    # New session
+    now = datetime.now()
+    SESSION_START_FILE.write_text(now.isoformat())
+    return now
 
 
 def get_xrp_price():
-    """Fetch current XRP price from CoinGecko API (free, no key required)."""
+    """Fetch current XRP price from CoinGecko API."""
     try:
         response = requests.get(
             "https://api.coingecko.com/api/v3/simple/price?ids=ripple&vs_currencies=usd",
@@ -162,14 +53,14 @@ def get_xrp_price():
             return float(price)
     except Exception as e:
         print(f"[{datetime.now().strftime('%H:%M:%S')}] Price fetch failed: {e}")
-    return 1.35  # Fallback price
+    return 1.35  # Fallback
 
 
-def analyze_real_trades():
-    """Read and analyze actual trade data from logs."""
+def analyze_trades():
+    """Read and analyze trade data from all logs."""
     all_trades = []
     
-    # Read main trades log (has real P&L data)
+    # Read main trades log
     if TRADES_LOG.exists():
         with open(TRADES_LOG, 'r') as f:
             for line in f:
@@ -187,20 +78,13 @@ def analyze_real_trades():
                     except (ValueError, IndexError):
                         continue
     
-    # Read continuous trades log (for additional trade count only, no PNL)
+    # Count continuous trades (additional activity)
     continuous_count = 0
     if CONTINUOUS_LOG.exists():
         with open(CONTINUOUS_LOG, 'r') as f:
-            for line in f:
-                parts = line.strip().split('|')
-                if len(parts) >= 5:
-                    try:
-                        # Only count if not already in trades log (approximate)
-                        continuous_count += 1
-                    except (ValueError, IndexError):
-                        continue
+            continuous_count = sum(1 for line in f if '|' in line)
     
-    if not all_trades:
+    if not all_trades and continuous_count == 0:
         return None
     
     # Calculate stats
@@ -210,47 +94,31 @@ def analyze_real_trades():
     total_pnl = sum(t.get('pnl', 0) for t in all_trades)
     total_volume = sum(t.get('amount', 0) * t.get('price', 0) for t in all_trades)
     
-    # Use only trades with P&L for win rate calculation
-    pnl_trades = [t for t in all_trades if t.get('pnl', 0) != 0 or 'pnl' in t]
-    winning_trades = len([t for t in pnl_trades if t.get('pnl', 0) > 0])
-    losing_trades = len([t for t in pnl_trades if t.get('pnl', 0) < 0])
-    total_pnl = sum(t.get('pnl', 0) for t in pnl_trades)
+    win_rate = (winning_trades / total_trades * 100) if total_trades > 0 else 0
     
-    win_rate = (winning_trades / len(pnl_trades) * 100) if pnl_trades else 0
-    
-    # Get latest strategy
+    # Get strategy from latest trade
     latest_strategy = all_trades[-1].get('strategy', 'market_maker') if all_trades else 'market_maker'
     
-    # Get live XRP price
+    # Get XRP price
     xrp_price = get_xrp_price()
     
-    # Calculate trades per hour (including continuous)
-    total_all_trades = len(all_trades) + continuous_count
-    if len(all_trades) >= 2:
-        try:
-            first_time = datetime.fromisoformat(all_trades[0]['timestamp'].replace('Z', '+00:00'))
-            last_time = datetime.fromisoformat(all_trades[-1]['timestamp'].replace('Z', '+00:00'))
-            runtime_hours = (last_time - first_time).total_seconds() / 3600
-            trades_per_hour = total_all_trades / runtime_hours if runtime_hours > 0 else 0
-        except:
-            trades_per_hour = total_all_trades / 24
-    else:
-        trades_per_hour = 0
+    # Calculate runtime
+    session_start = get_session_start()
+    runtime = datetime.now() - session_start
+    runtime_minutes = runtime.total_seconds() / 60
     
     return {
-        'total_trades': len(all_trades),
-        'total_trades_with_continuous': total_all_trades,
+        'total_trades': total_trades,
+        'continuous_trades': continuous_count,
         'winning_trades': winning_trades,
         'losing_trades': losing_trades,
         'win_rate': win_rate,
         'total_pnl_xrp': total_pnl,
         'total_pnl_usd': total_pnl * xrp_price,
         'total_volume_usd': total_volume,
-        'trades_per_hour': round(trades_per_hour, 1),
         'latest_strategy': latest_strategy,
-        'last_trade_time': all_trades[-1]['timestamp'] if all_trades else None,
         'xrp_price': xrp_price,
-        'continuous_trades': continuous_count
+        'runtime_minutes': runtime_minutes
     }
 
 
@@ -265,55 +133,97 @@ def get_strategy_emoji(strategy):
     return emojis.get(strategy.lower(), '🎯')
 
 
-def get_status_indicator(win_rate, pnl):
-    """Get status based on performance."""
-    if win_rate >= 70 and pnl > 0:
-        return "🔥 MAX"
-    elif win_rate >= 55 and pnl > 0:
-        return "⚡️ HIGH"
-    elif win_rate >= 40:
-        return "💤 MOD"
+def get_status_indicator(pnl):
+    """Get status based on P&L."""
+    if pnl > 0:
+        return "🔥 Profitable"
+    elif pnl < 0:
+        return "📉 Recovering"
     else:
-        return "🚨 LOW"
+        return "🔥 Building"
 
 
-def format_large_number(num):
-    """Format large numbers with K/M suffix."""
-    if num >= 1_000_000:
-        return f"{num/1_000_000:.1f}M"
-    elif num >= 1_000:
-        return f"{num/1_000:.1f}K"
-    return f"{num:.1f}"
+def format_runtime(minutes):
+    """Format runtime nicely."""
+    if minutes < 60:
+        return f"{minutes:.0f} minutes"
+    hours = minutes / 60
+    if hours < 24:
+        return f"{hours:.1f} hours"
+    days = hours / 24
+    return f"{days:.1f} days"
 
 
-def send_report():
-    """Send comprehensive trading report to Telegram."""
-    stats = analyze_real_trades()
+def send_startup_report():
+    """Send the v2.0 PRODUCTION startup message."""
+    # Try to get wallet info from config
+    wallet_addr = "rNWvQrBF4T..."  # Default
+    config_path = Path(__file__).parent / "config" / "production.yaml"
+    if config_path.exists():
+        try:
+            import yaml
+            with open(config_path, 'r') as f:
+                config = yaml.safe_load(f)
+                addr = config.get('wallet', {}).get('address', '')
+                if addr:
+                    wallet_addr = addr[:13] + "..."
+        except:
+            pass
+    
+    message = f"""🚀 <b>Chris Dunn v2.0 PRODUCTION</b>
+
+💼 Wallet: {wallet_addr}
+📈 Pair: XRP/RLUSD
+⏰ Started: {datetime.now().strftime('%H:%M:%S')}
+🎯 Strategy: Market Maker
+🔒 Profits → Vault"""
+    
+    try:
+        url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+        response = requests.post(
+            url,
+            json={'chat_id': GROUP_CHAT_ID, 'text': message, 'parse_mode': 'HTML'},
+            timeout=10
+        )
+        return response.status_code == 200
+    except Exception as e:
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] ❌ Startup message failed: {e}")
+        return False
+
+
+def send_session_summary():
+    """Send session summary with real data."""
+    stats = analyze_trades()
     
     if not stats:
-        message = """🦆 Chris Dunn | Lead XRPL Analyst — Greenhead Labs
-⚠️ No trading data available
-🎯 Status: Waiting for trades...
-📅 {} CST • Auto-Report""".format(datetime.now().strftime('%H:%M'))
+        # No data yet - send building status
+        session_start = get_session_start()
+        runtime = datetime.now() - session_start
+        runtime_minutes = runtime.total_seconds() / 60
+        
+        message = f"""🦆 <b>Chris Dunn Session Summary</b>
+
+⏱ Runtime: {format_runtime(runtime_minutes)}
+📊 Trades: 0
+💰 P&L: 0.0000 XRP
+🔥 Status: Building"""
     else:
         strategy_emoji = get_strategy_emoji(stats['latest_strategy'])
-        status = get_status_indicator(stats['win_rate'], stats['total_pnl_xrp'])
+        status = get_status_indicator(stats['total_pnl_xrp'])
         
-        message = f"""🦆 Chris Dunn | Lead XRPL Analyst — Greenhead Labs
+        message = f"""🦆 <b>Chris Dunn Session Summary</b>
+
+⏱ Runtime: {format_runtime(stats['runtime_minutes'])}
+📊 Trades: {stats['total_trades']}
+💰 P&L: {stats['total_pnl_xrp']:.4f} XRP (${stats['total_pnl_usd']:.2f})
+{status}
+
 {strategy_emoji} Strategy: {stats['latest_strategy'].replace('_', ' ').title()}
+📈 Win Rate: {stats['win_rate']:.1f}% ({stats['winning_trades']}W/{stats['losing_trades']}L)
+💵 Volume: ${stats['total_volume_usd']:.0f}
+🪙 XRP @ ${stats['xrp_price']:.2f}
 
-📊 SESSION STATS
-├─ Total Trades: {stats['total_trades']}
-├─ Win Rate: {stats['win_rate']:.1f}% ({stats['winning_trades']}W/{stats['losing_trades']}L)
-└─ Trade Rate: {stats['trades_per_hour']}/hr
-
-💰 PROFIT & LOSS (XRP @ ${stats['xrp_price']:.2f})
-├─ XRP Profit: {stats['total_pnl_xrp']:+.2f} XRP
-├─ USD Value: ${stats['total_pnl_usd']:+.2f}
-└─ Total Volume: ${format_large_number(stats['total_volume_usd'])}
-
-{status} | 🎯 Paper Trading via Sandbox
-📅 {datetime.now().strftime('%H:%M')} CST • Auto-Report"""
+⏰ Updated: {datetime.now().strftime('%H:%M')} CST | 30-min Report"""
     
     try:
         url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
@@ -323,7 +233,7 @@ def send_report():
             timeout=10
         )
         if response.status_code == 200:
-            print(f"[{datetime.now().strftime('%H:%M:%S')}] ✅ Report sent with real data")
+            print(f"[{datetime.now().strftime('%H:%M:%S')}] ✅ Session summary sent")
             return True
         else:
             print(f"[{datetime.now().strftime('%H:%M:%S')}] ❌ Failed: {response.status_code}")
@@ -334,28 +244,27 @@ def send_report():
 
 
 def main():
-    """Send real trade reports every 5 minutes and sync to website."""
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] Chris Dunn REAL-TIME Reporter Started")
-    print("Reading actual trade data from logs...")
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] 🌐 Website API: {WEBSITE_API_URL}")
+    """Send reports every 30 minutes with real data."""
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] Chris Dunn 30-Minute Reporter Started")
+    print(f"Session start: {get_session_start().strftime('%Y-%m-%d %H:%M:%S')}")
     
-    # Initial sync and report
-    sync_trades_to_website()
-    send_report()
+    # Send initial startup message
+    send_startup_report()
+    time.sleep(2)
+    
+    # Send first summary
+    send_session_summary()
     
     cycle = 0
     while True:
-        time.sleep(300)  # 5 minutes
+        # Sleep for 30 minutes
+        time.sleep(1800)  # 30 minutes = 1800 seconds
         cycle += 1
         
-        # Sync trades to website every cycle
-        sync_trades_to_website()
+        # Send updated summary
+        send_session_summary()
         
-        # Send Telegram report
-        send_report()
-        
-        # Log cycle completion
-        print(f"[{datetime.now().strftime('%H:%M:%S')}] ✅ Cycle {cycle} complete")
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] ✅ Cycle {cycle} complete (30-min interval)")
 
 
 if __name__ == "__main__":
