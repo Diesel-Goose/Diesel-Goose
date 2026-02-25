@@ -175,7 +175,7 @@ class ChrisDunnProduction:
                 logger.info(f"   Inventory: {status['inventory_ratio']:.1%} XRP")
                 
                 # Sleep between cycles
-                await asyncio.sleep(30)  # 30 second cycles
+                await asyncio.sleep(15)  # 15 second cycles (faster trading)
                 
             except Exception as e:
                 logger.error(f"Trading cycle error: {e}", exc_info=True)

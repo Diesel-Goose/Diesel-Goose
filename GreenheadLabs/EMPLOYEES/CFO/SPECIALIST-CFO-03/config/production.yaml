@@ -17,11 +17,11 @@ trading:
   quote_issuer: "rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De"  # RLUSD issuer (from wallet balance)
   quote_currency_hex: "524C555344000000000000000000000000000000"  # RLUSD in hex
   
-# Market Making Parameters - NOW WITH RLUSD BALANCE
+# Market Making Parameters - AGGRESSIVE MODE
 market_maker:
-  spread_pct: 0.8           # 0.8% spread
-  order_size_xrp: 5         # 5 XRP per order (with RLUSD can do both sides)
-  max_orders_each_side: 2   # Max 2 bid + 2 ask
+  spread_pct: 0.6           # Tighter spread (0.6%) for more fills
+  order_size_xrp: 3         # Smaller orders = more orders placed
+  max_orders_each_side: 4   # Max 4 bid + 4 ask = 8 total orders
   rebalance_threshold: 0.05
   target_inventory: 0.5
   
