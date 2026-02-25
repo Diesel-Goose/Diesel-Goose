@@ -2,12 +2,12 @@
 # XRP/RLUSD Market Maker - ADJUSTED for 32 RLUSD balance
 
 wallet:
-  # Trading wallet (hot) - DERIVED FROM 12-WORD PHRASE
-  address: "rautNFea3RYxnccx2hGSdaQFSDzkCSPWpL"
-  secret: "sEd7TSL7Y7Gh8sycAMpL9Sv44JDdAFd"
+  # Trading wallet (hot)
+  address: "rM3SzFbJaBPQzAtvVthG7QLLMh8QJmZnhC"
+  secret: "13f71e89eb09a5d93a91b123b882a2b3ef39fe7b4248a75593b486317294da38"
   
-  # Profit vault (Xaman secured) - RLUSD profits sent here
-  vault_address: "r3E25CzRmwMRNmT15mD3s8tLP9fZHbmN7B"
+  # Profit vault - RLUSD profits sent here
+  vault_address: "rprSd7C8SiQ66KNojopVgF8rSmaycjVN6o"
 
 # Trading pair
 trading:
