@@ -11,12 +11,14 @@ import logging
 
 # xrpl-py for production
 try:
-    from xrpl.clients import WebsocketClient
+    from xrpl.clients import JsonRpcClient
     from xrpl.wallet import Wallet
-    from xrpl.models.requests import BookOffers, AccountInfo, AccountOffers
+    from xrpl.models.requests import BookOffers, AccountInfo, AccountOffers, AccountLines
     from xrpl.models.transactions import OfferCreate, OfferCancel, Payment
     from xrpl.models.amounts import IssuedCurrencyAmount
+    from xrpl.models.currencies import XRP, IssuedCurrency
     from xrpl.utils import xrp_to_drops, drops_to_xrp
+    from xrpl.transaction import sign_and_submit
     XRPL_AVAILABLE = True
 except ImportError:
     XRPL_AVAILABLE = False
@@ -37,11 +39,11 @@ class XRPLProductionClient:
         
         # Trading pair
         self.base = config['trading']['base']  # XRP
-        self.quote = config['trading']['quote']  # RLUSD
+        self.quote = config['trading'].get('quote_currency_hex', 'RLUSD')  # RLUSD in hex
         self.quote_issuer = config['trading']['quote_issuer']
         
-        # XRPL connection
-        self.ws_url = config['xrpl']['websocket_url']
+        # XRPL connection - use HTTP JSON-RPC (more reliable)
+        self.rpc_url = "https://s1.ripple.com:51234/"  # Public rippled node
         self.client = None
         self.wallet = None
         
@@ -57,25 +59,32 @@ class XRPLProductionClient:
                 self.logger.error(f"Failed to load wallet: {e}")
     
     async def connect(self) -> bool:
-        """Establish WebSocket connection to XRPL."""
+        """Establish JSON-RPC connection to XRPL."""
         if not XRPL_AVAILABLE:
             self.logger.error("xrpl-py not available")
             return False
         
         try:
-            self.client = WebsocketClient(self.ws_url)
-            await self.client.open()
-            self.logger.info(f"Connected to {self.ws_url}")
+            # Use JSON-RPC (HTTP) instead of WebSocket
+            self.client = JsonRpcClient(self.rpc_url)
+            # Test connection with a simple account info request
+            import asyncio
+            # Run sync request in executor to avoid blocking
+            loop = asyncio.get_event_loop()
+            test_response = await loop.run_in_executor(
+                None, 
+                lambda: self.client.request(AccountInfo(account=self.address))
+            )
+            self.logger.info(f"Connected to {self.rpc_url}")
             return True
         except Exception as e:
             self.logger.error(f"Connection failed: {e}")
             return False
     
     async def disconnect(self):
-        """Close WebSocket connection."""
-        if self.client:
-            await self.client.close()
-            self.logger.info("Disconnected from XRPL")
+        """Close connection."""
+        self.client = None
+        self.logger.info("Disconnected from XRPL")
     
     async def get_balance(self) -> Dict[str, float]:
         """Get wallet balances (XRP + RLUSD)."""
@@ -83,15 +92,29 @@ class XRPLProductionClient:
             return {'xrp': 0.0, 'rlusd': 0.0}
         
         try:
+            import asyncio
+            loop = asyncio.get_event_loop()
+            
             # Get XRP balance
-            account_info = await self.client.request(AccountInfo(
-                account=self.address
-            ))
+            account_info = await loop.run_in_executor(
+                None,
+                lambda: self.client.request(AccountInfo(account=self.address))
+            )
             xrp_balance = drops_to_xrp(account_info.result['account_data']['Balance'])
             
             # Get RLUSD balance from account lines
-            # (simplified - would use AccountLines in full implementation)
-            rlusd_balance = 0.0  # Placeholder - fetch from trust lines
+            try:
+                lines = await loop.run_in_executor(
+                    None,
+                    lambda: self.client.request(AccountLines(account=self.address))
+                )
+                rlusd_balance = 0.0
+                for line in lines.result.get('lines', []):
+                    if line.get('currency') == self.quote and line.get('account') == self.quote_issuer:
+                        rlusd_balance = float(line.get('balance', 0))
+            except Exception as e:
+                self.logger.warning(f"Could not fetch RLUSD balance: {e}")
+                rlusd_balance = 0.0
             
             return {
                 'xrp': float(xrp_balance),
@@ -109,25 +132,25 @@ class XRPLProductionClient:
         try:
             # Get bids (people buying XRP with RLUSD)
             bids_request = BookOffers(
-                taker_gets={
-                    'currency': self.quote,
-                    'issuer': self.quote_issuer
-                },
-                taker_pays='0',
+                taker_gets=IssuedCurrency(
+                    currency=self.quote,
+                    issuer=self.quote_issuer
+                ),
+                taker_pays=XRP(),
                 limit=limit
             )
-            bids_response = await self.client.request(bids_request)
+            bids_response = await loop.run_in_executor(None, lambda: self.client.request(bids_request))
             
             # Get asks (people selling XRP for RLUSD)
             asks_request = BookOffers(
-                taker_gets='0',
-                taker_pays={
-                    'currency': self.quote,
-                    'issuer': self.quote_issuer
-                },
+                taker_gets=XRP(),
+                taker_pays=IssuedCurrency(
+                    currency=self.quote,
+                    issuer=self.quote_issuer
+                ),
                 limit=limit
             )
-            asks_response = await self.client.request(asks_request)
+            asks_response = await loop.run_in_executor(None, lambda: self.client.request(asks_request))
             
             # Parse into usable format
             bids = self._parse_offers(bids_response.result.get('offers', []), 'bid')

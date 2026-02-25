@@ -103,8 +103,8 @@ class ChrisDunnProduction:
         balance = await self.xrpl.get_balance()
         logger.info(f"💰 Wallet Balance: {balance['xrp']:.2f} XRP, {balance['rlusd']:.2f} RLUSD")
         
-        if balance['xrp'] < 30:
-            logger.error("❌ Insufficient XRP. Need at least 30 XRP for reserves.")
+        if balance['xrp'] < 5:
+            logger.error("❌ Insufficient XRP. Need at least 5 XRP for reserves.")
             return False
         
         # Initialize market maker

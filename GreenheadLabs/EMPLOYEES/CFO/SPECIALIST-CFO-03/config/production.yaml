@@ -15,20 +15,21 @@ trading:
   base: "XRP"
   quote: "RLUSD"
   quote_issuer: "rMxCKbEDwqr76QuOHsegZAHQZdWw8DYtT"  # Ripple RLUSD
+  quote_currency_hex: "524C555344000000000000000000000000000000"  # RLUSD in hex
   
-# Market Making Parameters - ADJUSTED FOR 32 RLUSD
+# Market Making Parameters - ADJUSTED FOR 5 XRP (more funds coming)
 market_maker:
   spread_pct: 0.8           # 0.8% spread
-  order_size_xrp: 10        # SMALL: 10 XRP per order (was 25)
-  max_orders_each_side: 2   # Max 2 bids + 2 asks
+  order_size_xrp: 2         # TINY: 2 XRP per order (only 5 XRP available)
+  max_orders_each_side: 1   # Max 1 bid + 1 ask
   rebalance_threshold: 0.05
   target_inventory: 0.5
   
-# Profit Sweep
+# Profit Sweep - DISABLED until more funds arrive
 sweep:
-  enabled: true
+  enabled: false            # Will enable after more XRP/RLUSD arrive
   threshold_xrp: 35         # Keep 35 XRP, sweep rest
-  threshold_rlusd: 20       # Keep 20 RLUSD, sweep rest (low for 32 balance)
+  threshold_rlusd: 20       # Keep 20 RLUSD, sweep rest
   interval_minutes: 60
 
 # Risk Management  
