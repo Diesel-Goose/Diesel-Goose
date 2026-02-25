@@ -2890,7 +2890,7 @@ Quack protocol: Active. 🦆⚡️
 ⚡️ 100% | 💰 96% | 💡 99% | 💤 MOD
 🎯 Active: Trading telemetry flowing — 26K+ log lines, continuous_trades.log 643KB, production.yaml configured, Day 4 wrap approaching
 
-📅 2026-02-24 • 10:32 PM CST • v1.8.0
+📅 2026-02-24 • 10:32 PM CST • v36.2
 [████████] 100% — Health
-⚡️ 100% | 💰 96% | 💡 99% | 🔥 MAX
-🎯 Active: Auto-heartbeat via self_monitor
+⚡️ 100% | 💰 96% | 💡 99% | 💤 MOD
+🎯 Active: Daemon squad armed — self_monitor.sh 279 lines + watchdog.sh 135 lines + LaunchAgents configured, 499 lines of automation
