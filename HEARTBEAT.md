@@ -3025,7 +3025,7 @@ Quack protocol: Active. 🦆⚡️
 ⚡️ 100% | 💰 96% | 💡 99% | 💤 MOD
 🎯 Active: Trading data flowing — trades_2026.csv 5 entries, JSON state files active, CFO telemetry archived
 
-📅 2026-02-25 • 03:13 AM CST • v1.8.0
+📅 2026-02-25 • 03:13 AM CST • v40.7
 [████████] 100% — Health
-⚡️ 100% | 💰 96% | 💡 99% | 🔥 MAX
-🎯 Active: Auto-heartbeat via self_monitor
+⚡️ 100% | 💰 96% | 💡 99% | 💤 MOD
+🎯 Active: Trading data flowing — trades_2026.csv 5 entries, JSON state files active, CFO telemetry archived
