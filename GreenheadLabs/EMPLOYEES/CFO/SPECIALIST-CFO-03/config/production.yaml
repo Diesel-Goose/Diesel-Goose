@@ -1,0 +1,52 @@
+# Chris Dunn Production Config
+# XRP/RLUSD Market Maker - ADJUSTED for 32 RLUSD balance
+
+wallet:
+  # Trading wallet (hot) - UPDATE THESE VALUES
+  address: "YOUR_TRADING_ADDRESS_HERE"
+  secret: "YOUR_SECRET_HERE"
+  
+  # Profit vault (Xaman secured) - UPDATE THIS
+  vault_address: "YOUR_VAULT_ADDRESS_HERE"
+
+# Trading pair
+trading:
+  pair: "XRP/RLUSD"
+  base: "XRP"
+  quote: "RLUSD"
+  quote_issuer: "rMxCKbEDwqr76QuOHsegZAHQZdWw8DYtT"  # Ripple RLUSD
+  
+# Market Making Parameters - ADJUSTED FOR 32 RLUSD
+market_maker:
+  spread_pct: 0.8           # 0.8% spread
+  order_size_xrp: 10        # SMALL: 10 XRP per order (was 25)
+  max_orders_each_side: 2   # Max 2 bids + 2 asks
+  rebalance_threshold: 0.05
+  target_inventory: 0.5
+  
+# Profit Sweep
+sweep:
+  enabled: true
+  threshold_xrp: 35         # Keep 35 XRP, sweep rest
+  threshold_rlusd: 20       # Keep 20 RLUSD, sweep rest (low for 32 balance)
+  interval_minutes: 60
+
+# Risk Management  
+risk:
+  portfolio_value: 67       # ~$67 (50 XRP @ $1.34)
+  position_limit_pct: 0.02
+  daily_loss_limit_pct: 0.05
+  max_consecutive_losses: 3
+  
+# XRPL Connection
+xrpl:
+  websocket_url: "wss://s1.ripple.com"
+  fallback_url: "wss://s2.ripple.com"
+  
+# Telegram Alerts
+telegram:
+  bot_token: "8350022484:AAE93G6trBzE6fhahPtdCKWZke6ZubGTaGQ"
+  group_chat_id: "-1003885436287"
+  alert_on_trade: true
+  alert_on_profit_sweep: true
+  alert_on_error: true
