@@ -38,7 +38,7 @@ class ProfitSweeper:
         
     async def check_and_sweep(self) -> Dict:
         """
-        Check balance and sweep excess to vault.
+        Check balance and sweep RLUSD excess to vault (XRP stays for trading).
         
         Returns:
             Dict with sweep results
@@ -61,34 +61,8 @@ class ProfitSweeper:
             
             self.logger.info(f"Checking sweep: {xrp:.2f} XRP, {rlusd:.2f} RLUSD | Vault: {self.vault_address[:10]}...")
             
-            # Sweep XRP excess
-            if xrp > self.threshold_xrp:
-                excess = xrp - self.threshold_xrp
-                # Reserve 10 XRP for fees
-                sweep_amount = excess - 10
-                
-                if sweep_amount > 1:  # Only sweep if > 1 XRP
-                    self.logger.info(f"Sweeping {sweep_amount:.2f} XRP to vault")
-                    
-                    result = await self.xrpl.send_payment(
-                        to_address=self.vault_address,
-                        amount=sweep_amount,
-                        currency='XRP'
-                    )
-                    
-                    if result.get('success'):
-                        results['xrp_swept'] = sweep_amount
-                        results['tx_hashes'].append(result['tx_hash'])
-                        self.total_swept_xrp += sweep_amount
-                        results['swept'] = True
-                        
-                        msg = f"🧹 Profit Sweep: {sweep_amount:.2f} XRP → Vault"
-                        self.logger.info(msg)
-                        
-                        if self.telegram:
-                            await self.telegram.send_alert(msg)
-                    else:
-                        self.logger.error(f"XRP sweep failed: {result.get('error')}")
+            # NOTE: XRP stays in trading wallet for reserves/fees
+            # Only sweep RLUSD profits to vault
             
             # Sweep RLUSD excess
             if rlusd > self.threshold_rlusd:
@@ -109,7 +83,7 @@ class ProfitSweeper:
                         self.total_swept_rlusd += excess
                         results['swept'] = True
                         
-                        msg = f"🧹 Profit Sweep: {excess:.2f} RLUSD → Vault"
+                        msg = f"🧹 RLUSD Profit Sweep: {excess:.2f} RLUSD → Vault"
                         self.logger.info(msg)
                         
                         if self.telegram:
