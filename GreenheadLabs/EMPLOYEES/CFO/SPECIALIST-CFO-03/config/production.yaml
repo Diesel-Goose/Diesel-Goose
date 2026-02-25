@@ -14,7 +14,7 @@ trading:
   pair: "XRP/RLUSD"
   base: "XRP"
   quote: "RLUSD"
-  quote_issuer: "rMxCKbEDwqr76QuOHsegZAHQZdWw8DYtT"  # Ripple RLUSD
+  quote_issuer: "rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De"  # RLUSD issuer (from wallet balance)
   quote_currency_hex: "524C555344000000000000000000000000000000"  # RLUSD in hex
   
 # Market Making Parameters - ADJUSTED FOR 5 XRP (more funds coming)

@@ -39,7 +39,7 @@ class XRPLProductionClient:
         
         # Trading pair
         self.base = config['trading']['base']  # XRP
-        self.quote = config['trading'].get('quote_currency_hex', 'RLUSD')  # RLUSD in hex
+        self.quote = config['trading'].get('quote_currency_hex', 'USD')  # USD
         self.quote_issuer = config['trading']['quote_issuer']
         
         # XRPL connection - use HTTP JSON-RPC (more reliable)
@@ -130,6 +130,9 @@ class XRPLProductionClient:
             return {'bids': [], 'asks': [], 'mid': 0.0}
         
         try:
+            import asyncio
+            loop = asyncio.get_event_loop()
+            
             # Get bids (people buying XRP with RLUSD)
             bids_request = BookOffers(
                 taker_gets=IssuedCurrency(
@@ -221,7 +224,8 @@ class XRPLProductionClient:
         
         try:
             drops = xrp_to_drops(amount)
-            rlusd_value = str(Decimal(amount) * Decimal(price))
+            # Round to valid issued currency precision (max 15 significant digits, 6 decimal places)
+            rlusd_value = str(round(Decimal(amount) * Decimal(price), 6))
             
             if side == 'buy':
                 # Buy XRP: TakerGets = RLUSD, TakerPays = XRP (drops)
@@ -246,9 +250,13 @@ class XRPLProductionClient:
                 taker_pays=taker_pays
             )
             
-            # Sign and submit
-            from xrpl.transaction import sign_and_submit
-            response = await sign_and_submit(offer_tx, self.client, self.wallet)
+            # Sign and submit using run_in_executor for sync function in async context
+            import asyncio
+            loop = asyncio.get_event_loop()
+            response = await loop.run_in_executor(
+                None, 
+                lambda: sign_and_submit(offer_tx, self.client, self.wallet)
+            )
             
             result = response.result
             if result.get('engine_result') == 'tesSUCCESS':
@@ -282,8 +290,12 @@ class XRPLProductionClient:
                 offer_sequence=sequence
             )
             
-            from xrpl.transaction import sign_and_submit
-            response = await sign_and_submit(cancel_tx, self.client, self.wallet)
+            import asyncio
+            loop = asyncio.get_event_loop()
+            response = await loop.run_in_executor(
+                None,
+                lambda: sign_and_submit(cancel_tx, self.client, self.wallet)
+            )
             
             result = response.result
             return {
@@ -301,9 +313,12 @@ class XRPLProductionClient:
             return []
         
         try:
-            response = await self.client.request(AccountOffers(
-                account=self.address
-            ))
+            import asyncio
+            loop = asyncio.get_event_loop()
+            response = await loop.run_in_executor(
+                None,
+                lambda: self.client.request(AccountOffers(account=self.address))
+            )
             
             offers = []
             for offer in response.result.get('offers', []):
@@ -339,8 +354,12 @@ class XRPLProductionClient:
                 amount=payment_amount
             )
             
-            from xrpl.transaction import sign_and_submit
-            response = await sign_and_submit(payment_tx, self.client, self.wallet)
+            import asyncio
+            loop = asyncio.get_event_loop()
+            response = await loop.run_in_executor(
+                None,
+                lambda: sign_and_submit(payment_tx, self.client, self.wallet)
+            )
             
             result = response.result
             return {
