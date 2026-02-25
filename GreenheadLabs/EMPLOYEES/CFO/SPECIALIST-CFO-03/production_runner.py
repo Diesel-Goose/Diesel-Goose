@@ -42,6 +42,7 @@ try:
     from core.xrpl_production import XRPLProductionClient
     from strategies.production_mm import ProductionMarketMaker
     from core.profit_sweeper import ProfitSweeper
+    from core.trade_logger import TradeLogger
     from utils.telegram_alerts import TelegramAlerts
     XRPL_AVAILABLE = True
 except ImportError as e:
@@ -68,6 +69,7 @@ class ChrisDunnProduction:
         self.market_maker = None
         self.sweeper = None
         self.telegram = None
+        self.trade_logger = None
         
     def _load_config(self, path: str) -> Dict:
         """Load configuration from YAML."""
@@ -121,6 +123,10 @@ class ChrisDunnProduction:
             telegram_alerts=self.telegram
         )
         
+        # Initialize trade logger for tax records
+        self.trade_logger = TradeLogger(self.config)
+        logger.info(f"📊 Trade logging enabled: {self.trade_logger.log_file}")
+        
         # Send startup message
         await self.telegram.send_startup_message(
             wallet=self.xrpl.address,
@@ -148,12 +154,20 @@ class ChrisDunnProduction:
                 
                 if trades:
                     self.total_trades += len(trades)
+                    # Get current balance for trade logging
+                    current_balance = await self.xrpl.get_balance()
                     for trade in trades:
                         await self.telegram.send_trade_alert(trade)
+                        # Log trade for tax records
+                        if self.trade_logger:
+                            await self.trade_logger.log_trade(trade, current_balance)
                 
-                # Every 10 cycles, check profit sweep
+                # Every 10 cycles, check profit sweep and log daily summary
                 if cycle % 10 == 0:
                     await self.sweeper.check_and_sweep()
+                    # Log daily summary every ~5 minutes (10 cycles * 30 seconds)
+                    if self.trade_logger and cycle % 120 == 0:  # Every hour
+                        await self.trade_logger.log_daily_summary(self.telegram)
                 
                 # Log status every cycle
                 status = self.market_maker.get_status()

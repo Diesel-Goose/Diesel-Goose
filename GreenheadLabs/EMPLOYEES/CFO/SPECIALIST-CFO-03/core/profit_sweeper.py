@@ -67,9 +67,10 @@ class ProfitSweeper:
             # Sweep RLUSD excess
             if rlusd > self.threshold_rlusd:
                 excess = rlusd - self.threshold_rlusd
+                excess = round(excess, 6)  # Round to valid precision
                 
                 if excess > 1:  # Only sweep if > 1 RLUSD
-                    self.logger.info(f"Sweeping {excess:.2f} RLUSD to vault")
+                    self.logger.info(f"Sweeping {excess:.6f} RLUSD to vault")
                     
                     result = await self.xrpl.send_payment(
                         to_address=self.vault_address,

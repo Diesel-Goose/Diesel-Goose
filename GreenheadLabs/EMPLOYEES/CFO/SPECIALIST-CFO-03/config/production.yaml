@@ -17,20 +17,28 @@ trading:
   quote_issuer: "rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De"  # RLUSD issuer (from wallet balance)
   quote_currency_hex: "524C555344000000000000000000000000000000"  # RLUSD in hex
   
-# Market Making Parameters - ADJUSTED FOR 5 XRP (more funds coming)
+# Market Making Parameters - NOW WITH RLUSD BALANCE
 market_maker:
   spread_pct: 0.8           # 0.8% spread
-  order_size_xrp: 2         # TINY: 2 XRP per order (only 5 XRP available)
-  max_orders_each_side: 1   # Max 1 bid + 1 ask
+  order_size_xrp: 5         # 5 XRP per order (with RLUSD can do both sides)
+  max_orders_each_side: 2   # Max 2 bid + 2 ask
   rebalance_threshold: 0.05
   target_inventory: 0.5
   
-# Profit Sweep - DISABLED until more funds arrive
+# Profit Sweep - DISABLED (manual profit management)
 sweep:
-  enabled: false            # Will enable after more XRP/RLUSD arrive
-  threshold_xrp: 35         # Keep 35 XRP, sweep rest
-  threshold_rlusd: 20       # Keep 20 RLUSD, sweep rest
+  enabled: false            # User manages profit manually
+  threshold_xrp: 999999     # Never sweep
+  threshold_rlusd: 999999   # Never sweep
   interval_minutes: 60
+
+# Tax Record Keeping
+trade_logging:
+  enabled: true
+  log_file: "logs/trades_2026.csv"
+  include_fields: ["timestamp", "tx_hash", "side", "amount", "price", "value_usd", "fees", "pnl"]
+  daily_summary: true
+  telegram_alerts: true
 
 # Risk Management  
 risk:

@@ -342,10 +342,12 @@ class XRPLProductionClient:
             if currency == 'XRP':
                 payment_amount = str(int(xrp_to_drops(amount)))
             else:
+                # Round to valid issued currency precision
+                rounded_amount = str(round(float(amount), 6))
                 payment_amount = IssuedCurrencyAmount(
                     currency=self.quote,
                     issuer=self.quote_issuer,
-                    value=str(amount)
+                    value=rounded_amount
                 )
             
             payment_tx = Payment(
