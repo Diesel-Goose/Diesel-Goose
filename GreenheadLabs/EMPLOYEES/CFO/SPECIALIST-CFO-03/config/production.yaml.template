@@ -1,0 +1,57 @@
+"""
+Chris Dunn Production Config
+XRP/RLUSD Market Maker - Hot Wallet + Vault Architecture
+"""
+
+# Copy this file to config/production.yaml and fill in your values
+# Then: chmod 600 config/production.yaml (restrict permissions)
+
+wallet:
+  # Trading wallet (hot) - limited funds for active MM
+  address: ""  # r... address
+  secret: ""   # s... secret (from 12-word phrase conversion)
+  
+  # Profit vault (Xaman secured) - receives swept profits
+  vault_address: ""  # r... address
+
+# Trading pair
+trading:
+  pair: "XRP/RLUSD"
+  base: "XRP"
+  quote: "RLUSD"
+  quote_issuer: "rMxCKbEDwqr76QuOHsegZAHQZdWw8DYtT"  # Ripple RLUSD
+  
+# Market Making Parameters
+market_maker:
+  spread_pct: 0.8           # 0.8% spread (bid/ask from mid)
+  order_size_xrp: 50        # XRP per order
+  max_orders_each_side: 3   # Max 3 bids + 3 asks
+  rebalance_threshold: 0.05 # Rebalance if inventory >5% off target
+  target_inventory: 0.5     # 50% XRP, 50% RLUSD target
+  
+# Profit Sweep
+sweep:
+  enabled: true
+  threshold_xrp: 40         # Keep 40 XRP, sweep rest
+  threshold_rlusd: 100      # Keep 100 RLUSD, sweep rest
+  interval_minutes: 60      # Check every hour
+
+# Risk Management  
+risk:
+  portfolio_value: 500      # Starting portfolio estimate ($)
+  position_limit_pct: 0.02  # 2% max per trade
+  daily_loss_limit_pct: 0.05 # 5% max daily loss
+  max_consecutive_losses: 3  # Halt after 3 losses
+  
+# XRPL Connection
+xrpl:
+  websocket_url: "wss://s1.ripple.com"
+  fallback_url: "wss://s2.ripple.com"
+  
+# Telegram Alerts
+telegram:
+  bot_token: "8350022484:AAE93G6trBzE6fhahPtdCKWZke6ZubGTaGQ"
+  group_chat_id: "-1003885436287"
+  alert_on_trade: true
+  alert_on_profit_sweep: true
+  alert_on_error: true
