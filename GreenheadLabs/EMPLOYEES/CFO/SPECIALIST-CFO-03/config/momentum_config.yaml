@@ -1,0 +1,51 @@
+# 15-Minute Momentum Trader Config
+# Greenhead Labs - Employee #2
+
+wallet:
+  # Uses same hot wallet as market maker
+  address: "rNWvQrBF4TVqTSSsG1eteNnS4obyv3EFUR"
+  secret: "sEdSKgRkJXwDUg8mfTEFRzGzMwqT1D7"
+  
+  # Profit stays in same wallet (manual management)
+  vault_address: "rNWvQrBF4TVqTSSsG1eteNnS4obyv3EFUR"
+
+# Trading pair
+trading:
+  pair: "XRP/RLUSD"
+  base: "XRP"
+  quote: "RLUSD"
+  quote_issuer: "rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De"
+  quote_currency_hex: "524C555344000000000000000000000000000000"
+
+# Momentum Strategy Settings
+momentum:
+  timeframe: "15m"           # 15-minute candles
+  position_size_pct: 10      # 10% of available XRP per trade
+  max_positions: 2           # Max 2 concurrent trades
+  stop_loss_pct: 2.0         # 2% stop loss
+  take_profit_pct: 4.0       # 4% take profit
+  min_momentum: 0.5          # Minimum 0.5% momentum to trigger
+  
+# Risk Management
+risk:
+  daily_loss_limit_pct: 5.0  # Halt after 5% daily loss
+  max_trades_per_day: 10     # Limit overtrading
+  
+# Trade Logging
+trade_logging:
+  enabled: true
+  log_file: "logs/momentum_trades_2026.csv"
+  include_fields: ["timestamp", "tx_hash", "side", "entry", "exit", "pnl"]
+
+# Telegram Alerts
+telegram:
+  bot_token: "8350022484:AAE93G6trBzE6fhahPtdCKWZke6ZubGTaGQ"
+  group_chat_id: "-1003885436287"
+  alert_on_trade: true
+  alert_on_position: true
+  alert_on_error: true
+
+# XRPL Connection
+xrpl:
+  websocket_url: "wss://s1.ripple.com"
+  fallback_url: "wss://s2.ripple.com"
