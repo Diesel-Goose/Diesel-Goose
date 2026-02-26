@@ -1,0 +1,67 @@
+# Kraken Multi-Pair Trading Bot Config
+# Greenhead Labs - Employee #3
+
+wallet:
+  # Note: Kraken manages custody - no private keys needed
+  # Funds stay on exchange
+  
+# Kraken API Credentials
+kraken:
+  api_key: "ie2fpG5WTjN7F6Hc5ho6wRlqQtr8exTJiMWoz4tfYaRk0S"
+  api_secret: "ptcHf1X1x5N6NxWL0krN62UthRyMK58kYIxkzPT4VQt2IZvLie30zRkNMsLMye4fUR2KL0441DACdS6G37XfkA=="
+  sandbox: false  # Live trading
+  
+# Trading Pairs (prioritized by preference)
+trading_pairs:
+  - XRPUSD    # Primary
+  - BTCUSD    # Bitcoin
+  - ETHUSD    # Ethereum
+  - SOLUSD    # Solana
+  - ADAUSD    # Cardano
+  - DOTUSD    # Polkadot
+  - LINKUSD   # Chainlink
+  - MATICUSD  # Polygon
+  
+# Strategy Settings
+strategy:
+  name: "multi_pair_momentum"
+  timeframe: "15m"           # 15-minute candles
+  lookback_candles: 20       # Analysis window
+  
+  # Entry conditions
+  min_volume_usd: 1000000    # $1M minimum 24h volume
+  min_volatility_pct: 1.0    # At least 1% daily range
+  
+  # Position sizing
+  max_position_pct: 10       # 10% of account per trade
+  max_concurrent_positions: 3
+  
+  # Risk management
+  stop_loss_pct: 2.0         # 2% stop
+  take_profit_pct: 4.0       # 4% target
+  trailing_stop: true
+  
+  # Time-based rules
+  trading_hours:
+    start: "08:00"           # UTC
+    end: "22:00"             # UTC
+  avoid_weekends: false
+  
+# Risk Limits
+daily_limits:
+  max_loss_pct: 5.0          # Halt after 5% daily loss
+  max_trades: 20             # Prevent overtrading
+  
+# Trade Logging
+trade_logging:
+  enabled: true
+  log_file: "logs/kraken_trades_2026.csv"
+  include_fields: ["timestamp", "pair", "side", "price", "size", "fee", "pnl"]
+  
+# Telegram Alerts
+telegram:
+  bot_token: "8350022484:AAE93G6trBzE6fhahPtdCKWZke6ZubGTaGQ"
+  group_chat_id: "-1003885436287"
+  alert_on_trade: true
+  alert_on_error: true
+  daily_summary: true
