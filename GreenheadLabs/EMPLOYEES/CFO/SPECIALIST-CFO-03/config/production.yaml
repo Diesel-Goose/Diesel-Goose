@@ -17,13 +17,20 @@ trading:
   quote_issuer: "rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De"  # RLUSD issuer (from wallet balance)
   quote_currency_hex: "524C555344000000000000000000000000000000"  # RLUSD in hex
   
-# Market Making Parameters - AGGRESSIVE MODE
+# Market Making Parameters - AGGRESSIVE REBALANCE MODE
 market_maker:
-  spread_pct: 0.6           # Tighter spread (0.6%) for more fills
-  order_size_xrp: 3         # Smaller orders = more orders placed
-  max_orders_each_side: 4   # Max 4 bid + 4 ask = 8 total orders
+  spread_pct: 0.6           # Base spread
+  order_size_xrp: 3         # Base order size
+  max_orders_each_side: 4   # Max 4 bid + 4 ask
   rebalance_threshold: 0.05
   target_inventory: 0.5
+  
+  # Aggressive rebalancing settings
+  aggressive_mode: true
+  inventory_skew_threshold: 0.3  # Trigger when >30% off target
+  bid_premium_pct: 0.3        # Pay 0.3% MORE when heavy USD (buy XRP faster)
+  ask_discount_pct: 0.0       # No discount on asks when heavy XRP
+  max_skew_orders: 6          # Up to 6 orders on imbalanced side
   
 # Profit Sweep - DISABLED (manual profit management)
 sweep:

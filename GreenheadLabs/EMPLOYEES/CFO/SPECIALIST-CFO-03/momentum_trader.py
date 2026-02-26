@@ -112,7 +112,7 @@ class MomentumTrader:
             spread = orderbook.get('spread', 0)
             
             # Get recent trades for volume estimation
-            volume = len(self.xrpl.get_open_offers())  # Proxy for activity
+            volume = 10  # Default volume estimate
             
             return {
                 'timestamp': datetime.now(),
