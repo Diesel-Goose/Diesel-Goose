@@ -23,3 +23,10 @@
 {"timestamp": "2026-03-11T05:02:00.397985", "direction": "down", "amount": 1.617667724868547, "confidence": 0.8, "entry_price": 1.37, "type": "PAPER_TRADE"}
 {"timestamp": "2026-03-11T05:02:10.509764", "direction": "down", "amount": 1.5367843386251197, "confidence": 0.8, "entry_price": 1.37, "type": "PAPER_TRADE"}
 {"timestamp": "2026-03-11T05:03:21.606054", "direction": "down", "amount": 1.4599451216938637, "confidence": 0.8, "entry_price": 1.37, "type": "PAPER_TRADE"}
+{"timestamp": "2026-03-11T06:45:16.203150", "direction": "down", "amount": 1.3869478656091705, "confidence": 0.8, "entry_price": 1.37, "type": "PAPER_TRADE"}
+{"timestamp": "2026-03-11T06:45:26.453384", "direction": "down", "amount": 1.317600472328712, "confidence": 0.8, "entry_price": 1.37, "type": "PAPER_TRADE"}
+{"timestamp": "2026-03-11T06:45:36.672963", "direction": "down", "amount": 1.2517204487122764, "confidence": 0.8, "entry_price": 1.37, "type": "PAPER_TRADE"}
+{"timestamp": "2026-03-11T06:46:53.162941", "direction": "down", "amount": 1.1891344262766625, "confidence": 0.8, "entry_price": 1.37, "type": "PAPER_TRADE"}
+{"timestamp": "2026-03-11T06:47:03.419696", "direction": "down", "amount": 1.1296777049628293, "confidence": 0.8, "entry_price": 1.37, "type": "PAPER_TRADE"}
+{"timestamp": "2026-03-11T06:53:40.353420", "direction": "down", "amount": 1.0731938197146877, "confidence": 0.8, "entry_price": 1.37, "type": "PAPER_TRADE"}
+{"timestamp": "2026-03-11T06:53:50.466337", "direction": "down", "amount": 1.0195341287289534, "confidence": 0.8, "entry_price": 1.37, "type": "PAPER_TRADE"}
